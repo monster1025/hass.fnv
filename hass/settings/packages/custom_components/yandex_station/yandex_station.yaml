@@ -1,0 +1,3 @@
+yandex_station:
+  username: !secret alice_login
+  password: !secret alice_pwd

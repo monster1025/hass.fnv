@@ -1,0 +1,71 @@
+new_script:
+  alias: Сценарий Я Ушёл
+  sequence:
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id: switch.watercontrol_valves
+  - service: climate.set_preset_mode
+    data:
+      preset_mode: away
+    target:
+      area_id:
+      - gostinaia
+      - kukhnia
+      - spalnia
+      - detskaia
+  - service: media_player.turn_off
+    data: {}
+    target:
+      device_id:
+      - 368a8521d684580dd39b88502808b3bc
+      - 07a253973c89fdb7e7b66174bf5a1275
+      - b60210b82dc048bffc5a59f683de2f0a
+  - service: cover.close_cover
+    data: {}
+    target:
+      area_id:
+      - gostinaia
+      - kukhnia
+      - spalnia
+  mode: single
+  icon: mdi:shield-lock
+'1675839976060':
+  alias: Вскипяти чайник
+  sequence:
+  - service: input_select.set_options
+    data:
+      options: Boil Water
+    target:
+      entity_id: select.chunmi_a1_35e9_cook_mode
+  mode: single
+'1676313705945':
+  alias: Сценарий Я Дома
+  sequence:
+  - service: switch.turn_on
+    data: {}
+    target:
+      entity_id: switch.watercontrol_valves
+  - service: climate.set_preset_mode
+    data:
+      preset_mode: manual
+    target:
+      area_id:
+      - gostinaia
+      - kukhnia
+      - spalnia
+      - detskaia
+  - if:
+    - condition: sun
+      before: sunset
+      after: sunrise
+    then:
+    - service: cover.open_cover
+      data: {}
+      target:
+        area_id:
+        - gostinaia
+        - kukhnia
+        - spalnia
+  mode: single
+  icon: mdi:shield-lock

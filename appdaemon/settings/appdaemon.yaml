@@ -1,0 +1,35 @@
+logs:
+  main_log:
+    filename: STDOUT
+
+appdaemon:
+  # threads: 10
+  latitude: !secret home_latitude
+  longitude: !secret home_longitude
+  elevation: 0
+  time_zone: !secret timezone
+
+  plugins:
+    HASS:
+      type: hass
+      namespace: default
+      ha_url: !secret ha_url
+      token: !secret ha_token
+
+    MQTT:
+      type: mqtt
+      namespace: mqtt
+      verbose: True
+      client_host: !secret mqtt_ip
+      client_port: 1883
+      client_user: !secret mqtt_user
+      client_password: !secret mqtt_password
+      client_topics:
+        - home/presence/#
+
+http:
+  url: !secret ha_url
+admin:
+api:
+hadashboard:
+mqtt:

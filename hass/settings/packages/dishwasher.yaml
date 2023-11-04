@@ -1,0 +1,22 @@
+# sensor:
+# - platform: template
+#   sensors:
+#     dishwasher_remaining:
+#       friendly_name: "Dishwasher remaining"
+#       value_template: >
+#         {% if states('sensor.dishwasher_operation_state') == 'Inactive' %} -
+#         {% elif states('sensor.dishwasher_operation_state') == 'Finished' %} -
+#         {% elif states('sensor.dishwasher_remaining_program_time') == 'unavailable' %} -
+#         {% elif (as_timestamp(states('sensor.dishwasher_remaining_program_time')) - as_timestamp(now())) < 61 %} < 1 min
+#         {% else %}
+#           {{ (((as_timestamp(states('sensor.dishwasher_remaining_program_time')) - as_timestamp(now())) / 60) | round(0)) | string + " min" }}
+#         {% endif %}
+#     dishwasher_progress:
+#       friendly_name: "Dishwasher progress"
+#       value_template: >
+#         {% if states('sensor.dishwasher_operation_state') == 'Inactive' %} -
+#         {% elif states('sensor.dishwasher_operation_state') == 'Finished' %} -
+#         {% elif states('sensor.dishwasher_program_progress') == 'unavailable' %} -
+#         {% else %}
+#           {{ states('sensor.dishwasher_program_progress') + "%" }}
+#         {% endif %}

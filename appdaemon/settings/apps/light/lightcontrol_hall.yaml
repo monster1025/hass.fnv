@@ -1,0 +1,15 @@
+light_control_hall:
+  module: lightcontrol_hall
+  class: LightControlHall
+  motion_sensors: 
+    - binary_sensor.motion_hall_1_occupancy
+    - binary_sensor.motion_hall_2_occupancy
+  door_sensors:
+    - binary_sensor.door_locker_hall_right_contact
+    - binary_sensor.door_locker_hall_left_contact 
+  light_sensor: sensor.brightness_hall_illuminance_lux
+  control_entity: switch.light_4_l1
+  timeout: 120
+  constraint: input_boolean.locker_light_control
+  global_dependencies:
+    - globals

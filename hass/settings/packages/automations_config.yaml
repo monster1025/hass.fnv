@@ -1,0 +1,51 @@
+input_boolean:
+  presence_control:
+    name: Контроль присутствия (действия по уходу и приходу)
+    icon: mdi:account-off
+
+  water_leak_control:
+    name: Контроль протечек
+    icon: mdi:water-off
+
+  water_control:
+    name: Контроль подачи воды
+    icon: mdi:water-pump
+
+  security_sensors_report:
+    name: Охрана периметра при отсутствии
+    icon: mdi:access-point
+
+  battery_report:
+    name: Отчет о состоянии батарей датчиков
+    icon: mdi:battery-charging-wireless-10
+  
+  water_counters_report:
+    name: Отчет о поверке счетчиков
+    icon: mdi:alert-octagon
+
+  balance_report:
+    name: Отчет о балансе
+    icon: mdi:alert-octagon
+
+  watchdog_report:
+    name: Отчет watchdog
+    icon: mdi:lock-alert
+
+############################# Автоматизации AppDaemon #############################
+  bath_light_control:
+    name: Контроль света в ванной
+
+  shower_light_control:
+    name: Контроль света в душе
+
+  locker_light_control:
+    name: Контроль света шкаф
+
+  vent_control:
+    name: Управление бризером
+  
+  vent_control_heat:
+    name: Управление подогревом бризера
+
+  bath_mirror_heat:
+    name: Управление подогревом зеркала ванна

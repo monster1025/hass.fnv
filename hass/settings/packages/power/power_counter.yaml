@@ -1,0 +1,191 @@
+# recorder:
+#   include:
+#     entities:
+#       - sensor.power_total
+#       - sensor.power_active_power
+#       - sensor.power_monthly_cost_t1
+#       - sensor.power_monthly_cost_t2
+#       - sensor.power_monthly_cost_t3
+
+modbus:
+  name: modbus_power
+  type: serial
+  method: rtu
+  port: /dev/ttyUSB0
+  baudrate: 9600
+  stopbits: 1
+  bytesize: 8
+  parity: N #N
+  sensors:
+    - name: power_total
+      unit_of_measurement: 'kWh'
+      slave: 1
+      address: 10
+      precision: 2
+      scale: 0.01
+      data_type: uint32
+
+    - name: power_voltage_a
+      slave: 1
+      address: 128
+      precision: 1
+      scale: 0.1
+      unit_of_measurement: 'V'
+
+    - name: power_voltage_b
+      slave: 1
+      address: 129
+      precision: 1
+      scale: 0.1
+      unit_of_measurement: 'V'
+
+    - name: power_voltage_c
+      slave: 1
+      address: 130
+      precision: 1
+      scale: 0.1
+      unit_of_measurement: 'V'
+    
+    - name: power_current_a
+      slave: 1
+      address: 131
+      precision: 2
+      scale: 0.01
+      unit_of_measurement: 'A'
+
+    - name: power_current_b
+      slave: 1
+      address: 132
+      precision: 2
+      scale: 0.01
+      unit_of_measurement: 'A'
+
+    - name: power_current_c
+      slave: 1
+      address: 133
+      precision: 2
+      scale: 0.01
+      unit_of_measurement: 'A'
+
+    - name: power_active_power
+      slave: 1
+      address: 134
+      data_type: int32
+      precision: 3
+      scale: 0.001
+      unit_of_measurement: 'KW'
+
+    - name: power_reactive_power
+      slave: 1
+      address: 139
+      data_type: int32
+      precision: 3
+      scale: 0.001
+      unit_of_measurement: 'Kvar'
+
+    - name: power_power_factor
+      slave: 1
+      address: 149
+      precision: 3
+      scale: 0.001
+      unit_of_measurement: '%'
+
+    - name: power_frequency
+      slave: 1
+      address: 17
+      precision: 2
+      scale: 0.01
+      unit_of_measurement: 'Hz'
+
+sensor:
+  - platform: template
+    sensors:
+      power_main_total:
+        unit_of_measurement: 'kWh'
+        value_template: "{{ states('sensor.power_total') | float - 7072.7 | round(2) }}"
+        #7072.7 - разница показаний.
+
+      power_monthly_cost_t1:
+        unit_of_measurement: '₽'
+        value_template: "{{ states('sensor.power_monthly_t1') | float * 8.23 | round(2) }}"
+      power_monthly_cost_t2:
+        unit_of_measurement: '₽'
+        value_template: "{{ states('sensor.power_monthly_t2') | float * 2.62 | round(2) }}"
+      power_monthly_cost_t3:
+        unit_of_measurement: '₽'
+        value_template: "{{ states('sensor.power_monthly_t3') | float * 5.66 | round(2) }}"
+      power_monthly_cost_total:
+        unit_of_measurement: '₽'
+        value_template: "{{ states('sensor.power_monthly_cost_t1') | float + states('sensor.power_monthly_cost_t2') | float + states('sensor.power_monthly_cost_t3')  | float | round(2) }}"
+
+utility_meter:
+  power_hourly:
+    source: sensor.power_total
+    cycle: hourly
+  power_daily:
+    source: sensor.power_total
+    cycle: daily
+  power_monthly:
+    source: sensor.power_total
+    cycle: monthly
+
+  power_theory:
+    source: sensor.power_total
+    cycle: monthly
+    tariffs:
+      - t1
+      - t2
+      - t3
+  power_monthly_t1:
+    source: sensor.power_theory_t1
+    cycle: monthly
+  power_monthly_t2:
+    source: sensor.power_theory_t2
+    cycle: monthly
+  power_monthly_t3:
+    source: sensor.power_theory_t3
+    cycle: monthly
+
+homeassistant:
+  customize:
+    sensor.power_main_total:
+      friendly_name: Общий счётчик
+
+    sensor.power_total:
+      friendly_name: Потреблено итого
+
+    sensor.power_voltage_a:
+      friendly_name: Напряжение A
+
+    sensor.power_voltage_b:
+      friendly_name: Напряжение B
+
+    sensor.power_voltage_c:
+      friendly_name: Напряжение C
+
+    sensor.power_current_a:
+      friendly_name: Ток A
+
+    sensor.power_current_b:
+      friendly_name: Ток B
+
+    sensor.power_current_c:
+      friendly_name: Ток C
+
+    sensor.power_frequency:
+      friendly_name: Частота
+
+    sensor.power_active_power:
+      friendly_name: Активная нагрузка
+
+    sensor.power_reactive_power:
+      friendly_name: Реактивная нагрузка
+
+    sensor.power_power_factor:
+      friendly_name: Коэффициент мощности
+
+    sensor.power_export:
+      friendly_name: Экспортировано
+
+    sensor.power_import:
+      friendly_name: Импортировано

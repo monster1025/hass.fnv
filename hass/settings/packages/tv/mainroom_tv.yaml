@@ -1,0 +1,23 @@
+# Either put this here or in your automations.yaml
+rest_command:
+  mainroom_tv_wol:
+    url: "http://192.168.1.1/wol_action.asp?dstmac=AC:5A:F0:99:65:11"
+    method: get
+    content_type: "application/json"
+    username: !secret router_username
+    password: !secret router_password
+
+
+automation:
+  - id: 'mainroomtv_wakeup'
+    alias: "Wake up mainroom tv on turn_on"
+    trigger:
+      - platform: webostv.turn_on
+        entity_id: media_player.mainroom_tv
+    action:
+      - service: rest_command.mainroom_tv_wol
+      - delay: 5
+      - service: media_player.select_source
+        data:
+          entity_id: media_player.mainroom_tv
+          source: Wink

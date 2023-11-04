@@ -1,0 +1,127 @@
+
+#################################
+#   MOS.RU DATA RETRIEVER       #
+#################################
+mosru_client:
+  class: MosruClient
+  module: mosru
+  properties:
+    login: !secret mosru_login
+    pwd: !secret mosru_pwd
+    token: !secret mosru_token
+    paycode: !secret mosru_paycode
+    flat_id: !secret mosru_flat_id
+    session_id: !secret mosru_session
+  global_dependencies:
+    - globals
+
+epd_sensor:
+  class: EpdBalanceSensor
+  module: mosru
+  entity_ids:
+    epd_balance: sensor.epd_balance
+  app: mosru_client
+  dependencies:
+    - mosru_client
+  global_dependencies:
+    - globals
+
+
+power_sensor:
+  class: PowerCounterSensor
+  module: mosru
+  entity_ids:
+    power_balance: sensor.power_mosenergosbyt_balance
+    power_total: sensor.power_mosenergosbyt_total
+  app: mosru_client
+  dependencies:
+    - mosru_client
+  global_dependencies:
+    - globals
+
+water_sensor:
+  class: WaterCounterSensor
+  module: mosru
+  entity_ids:
+    hot: sensor.counter_mosru_hot
+    cold: sensor.counter_mosru_cold
+  app: mosru_client
+  dependencies:
+    - mosru_client
+  global_dependencies:
+    - globals
+
+# water_sender:
+#   class: WaterCounterSender
+#   module: mosru
+#   entity_ids:
+#     hot: sensor.counter_hot
+#     cold: sensor.counter_cold
+#   app: mosru_client
+#   dependencies:
+#     - mosru_client
+#   global_dependencies:
+#     - globals
+
+# power_sender:
+#   class: PowerCounterSender
+#   module: mosru
+#   power_mosenergosbyt_total: sensor.power_mosenergosbyt_total
+#   threshold: 100
+#   entity_ids:
+#     power_total: sensor.power_main_total
+#   app: mosru_client
+#   dependencies:
+#     - mosru_client
+#   global_dependencies:
+#     - globals
+
+#---------------------------------------------------------
+mosru_client_belorechenskaya:
+  class: MosruClient
+  module: mosru
+  properties:
+    login: !secret mosru_login
+    pwd: !secret mosru_pwd
+    token: !secret mosru_token
+    paycode: !secret mosru_belorechenskaya_paycode
+    flat_id: !secret mosru_belorechenskaya_flat_id
+    session_id: !secret mosru_session
+  global_dependencies:
+    - globals
+
+epd_sensor_belorechenskaya:
+  class: EpdBalanceSensor
+  module: mosru
+  entity_ids:
+    epd_balance: sensor.epd_balance_belorechenskaya
+  app: mosru_client_belorechenskaya
+  dependencies:
+    - mosru_client_belorechenskaya
+  global_dependencies:
+    - globals
+
+
+power_sensor_belorechenskaya:
+  class: PowerCounterSensor
+  module: mosru
+  entity_ids:
+    power_balance: sensor.power_mosenergosbyt_belorechenskaya_balance
+    power_total: sensor.power_mosenergosbyt_belorechenskaya_total
+  app: mosru_client_belorechenskaya
+  dependencies:
+    - mosru_client_belorechenskaya
+  global_dependencies:
+    - globals
+
+water_sensor_belorechenskaya:
+  class: WaterCounterSensor
+  module: mosru
+  entity_ids:
+    hot: sensor.counter_mosru_belorechenskaya_hot
+    cold: sensor.counter_mosru_belorechenskaya_cold
+  app: mosru_client_belorechenskaya
+  dependencies:
+    - mosru_client_belorechenskaya
+  global_dependencies:
+    - globals

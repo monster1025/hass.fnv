@@ -1,0 +1,6 @@
+# rassToHappybubbles:
+#  module: rassToHappybubbles
+#  class: RassToHappyBubbles
+#  global_dependencies:
+#   - globals
+#  constrain: input_boolean.constraint_test

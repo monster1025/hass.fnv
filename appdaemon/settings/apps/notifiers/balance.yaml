@@ -1,0 +1,30 @@
+#################################
+#  SENSOR BATTERY LOW REMINDER  #
+#################################
+balance_low_report:
+  class: Balance
+  module: balance
+  constraint: input_boolean.balance_report
+  name: Алтуфьево
+  entity_ids:
+    mosenergosbyt_balance: sensor.power_mosenergosbyt_balance
+    epd_balance: sensor.epd_balance
+  always_send: 0
+  threshold: -100
+  notify: telegram
+  global_dependencies:
+    - globals
+
+balance_low_report_belorechenskaya:
+  class: Balance
+  module: balance
+  constraint: input_boolean.balance_report
+  name: Белореченская
+  entity_ids:
+    mosenergosbyt_balance: sensor.power_mosenergosbyt_belorechenskaya_balance
+    epd_balance: sensor.epd_balance_belorechenskaya
+  always_send: 0
+  threshold: -100
+  notify: telegram
+  global_dependencies:
+    - globals

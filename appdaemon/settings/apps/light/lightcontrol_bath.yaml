@@ -1,0 +1,25 @@
+#################################
+#          LIGHT CONTROL        #
+#################################
+light_control_bath:
+  module: lightcontrol_bath
+  class: LightControlBath
+  sensor: binary_sensor.motion_bath
+  door_sensor: binary_sensor.door_bath_contact
+  control_entity: switch.light_bath
+  control_night_entity: switch.light_bath_mirror
+  timeout: 240
+  constraint: input_boolean.bath_light_control
+  global_dependencies:
+    - globals
+
+light_control_shower:
+  module: lightcontrol_bath
+  class: LightControlBath
+  sensor: binary_sensor.motion_shower_center_occupancy
+  door_sensor: binary_sensor.door_shower_contact
+  control_entity: switch.shower_mirror
+  timeout: 240
+  constraint: input_boolean.shower_light_control
+  global_dependencies:
+    - globals

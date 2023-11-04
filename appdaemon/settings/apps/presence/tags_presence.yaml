@@ -1,0 +1,16 @@
+#################################
+#        HOME PRESENSE          #
+#################################
+tags_presence:
+  module: tags_presence
+  class: TagsPresence
+  tag_prefix: sensor.tag_
+  sensor_prefix: sensor.presence_
+  constraint_prefix: input_boolean.tag_
+  person_prefix: person.
+  rooms:
+    - kladovka
+    - bedroom
+    - mainroom
+  global_dependencies:
+    - globals

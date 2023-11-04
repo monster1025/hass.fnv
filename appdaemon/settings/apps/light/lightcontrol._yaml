@@ -1,0 +1,25 @@
+light_control_hall:
+  module: lightcontrol
+  class: LightControl
+  sensor: binary_sensor.motion_sensor_hall
+  control_entity: switch.plug_light_hall
+  control_night_entity: light.gateway
+  timeout: 240
+  constraint: input_boolean.hall_light_control
+  ha_panel: alarm_control_panel.ha_alarm
+  vacuum: vacuum.xiaomi_vacuum_cleaner
+  global_dependencies:
+    - globals
+
+light_control_kitchen:
+  module: lightcontrol
+  class: LightControl
+  sensor: group.kitchen_motion_sensors
+  control_entity: switch.light_kitchen
+  timeout: 600
+  constraint: input_boolean.kitchen_light_control
+  ha_panel: alarm_control_panel.ha_alarm
+  vacuum: vacuum.xiaomi_vacuum_cleaner
+  global_dependencies:
+    - globals
+    

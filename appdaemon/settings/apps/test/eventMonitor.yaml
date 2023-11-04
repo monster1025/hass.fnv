@@ -1,0 +1,6 @@
+# eventMonitor:
+#  module: eventMonitor
+#  class: Monitor
+#  global_dependencies:
+#   - automation
+#  events: 

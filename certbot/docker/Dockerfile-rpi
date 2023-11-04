@@ -1,0 +1,7 @@
+FROM certbot/certbot:arm32v6-latest
+
+ADD ./update_certs.sh /update_certs.sh
+RUN chmod +x /update_certs.sh 
+
+CMD ""
+ENTRYPOINT "/update_certs.sh"

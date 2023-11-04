@@ -1,0 +1,56 @@
+# --------------------------------------------------------------------------
+# Substitutions
+#
+# These are substitutions as used by the configuration packages from below.
+# You can uncomment and update the ones that you want to modify.
+# --------------------------------------------------------------------------
+
+substitutions:
+  name: danil-bedside-lamp
+  friendly_name: Danil Bedside Lamp
+  #light_name: ${friendly_name} RGBWW Light
+  #light_mode_text_sensor_name: ${friendly_name} Light Mode
+  #default_transition_length: 800ms
+
+# --------------------------------------------------------------------------
+# Load configuration packages
+#
+# These provide a convenient way to compose your device configuration from
+# some functional building blocks. Pick and mix the blocks that you need.
+#
+# For customization you can override options in your config or you can
+# copy the contents of these packages directly in your config file as
+# an example for your own customizations.
+#
+# Available packages are:
+# - core.yaml                : core components & hardware setup
+# - behavior_default.yaml    : default device behavior
+# - ota_feedback.yaml        : enable visual feedback during OTA updates
+# - activate_preset_svc.yaml : 'activate_preset' service for Home Assistant
+# --------------------------------------------------------------------------
+
+packages:
+  bslamp2:
+    url: https://github.com/mmakaay/esphome-xiaomi_bslamp2
+    ref: dev
+    files:
+      - packages/core.yaml
+      - packages/behavior_default.yaml
+      - packages/ota_feedback.yaml
+      - packages/activate_preset_svc.yaml
+    refresh: 0s
+
+# --------------------------------------------------------------------------
+# Use your own preferences for these components.
+# --------------------------------------------------------------------------
+
+wifi:
+  ssid: !secret wifi_24_name
+  password: !secret wifi_24_pass
+
+api:
+  encryption:
+    key: !secret api_encryption_key
+
+ota: 
+  password: !secret esphome_pass

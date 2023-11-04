@@ -1,0 +1,26 @@
+rest_command:
+  bedroom_tv_wol:
+    url: "http://192.168.1.1/wol_action.asp?dstmac=74:E6:B8:78:7E:FB"
+    method: get
+    content_type: "application/json"
+    username: !secret router_username
+    password: !secret router_password
+
+automation:
+  - id: 'bedroomtv_wakeup'
+    alias: "Wake up bedroom tv on turn_on"
+    trigger:
+      - platform: webostv.turn_on
+        entity_id: media_player.bedroom_tv
+    action:
+      - service: cover.set_cover_position
+        target:  
+          entity_id: cover.curtain_bedroom
+        data:
+          position: 38
+      - service: rest_command.bedroom_tv_wol
+      - delay: 5
+      - service: media_player.select_source
+        data:
+          entity_id: media_player.bedroom_tv
+          source: YouTube

@@ -1,0 +1,8 @@
+# happyBubblesToDeviceTracker:
+#  module: happyBubblesToDeviceTracker
+#  class: HappyBubblesToDeviceTracker
+#  global_dependencies:
+#   - globals
+#  constrain: input_boolean.constraint_test
+#  home_lat: !secret home_latitude
+#  home_lon: !secret home_longitude

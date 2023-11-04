@@ -1,0 +1,21 @@
+#################################
+#  Обновление температуры на термоголовках  #
+#################################
+trv_updater:
+  # Название класса
+  class: TRVUpdater
+  module: trv_updater
+
+  entities:
+    'sensor.temperature_mainroom_temperature':
+      topic_prefix: z2m-tcp/radiator_mainroom/set/sensor_temp
+    'sensor.temperature_bedroom_temperature':
+      topic_prefixes: 
+        - z2m-tcp/radiator_bedroom/set/sensor_temp
+        - z2m-tcp/radiator_bedroom_balcony/set/sensor_temp
+    'sensor.temperature_kitchen_temperature':
+      topic_prefix: z2m-tcp/radiator_kitchen/set/sensor_temp
+    'sensor.temperature_childroom_temperature':
+      topic_prefix: z2m-tcp/radiator_childroom/set/sensor_temp
+  global_dependencies:
+    - globals

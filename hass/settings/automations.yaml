@@ -1,0 +1,226 @@
+- id: '1673089633491'
+  alias: Close water valve on leak
+  description: Закрывает краны при протечке
+  trigger:
+  - type: moist
+    platform: device
+    device_id: 7e372ea1e8abf55447e0301e5452065c
+    entity_id: binary_sensor.water_leak_shower_sink_water_leak
+    domain: binary_sensor
+  - type: moist
+    platform: device
+    device_id: 92a67028aff72b8c91ab5959f489a64b
+    entity_id: binary_sensor.water_leak_kitchen_fridge_water_leak
+    domain: binary_sensor
+  - type: moist
+    platform: device
+    device_id: b047c2908b1f6b227df71ac30dcc9b5d
+    entity_id: 3a3635a3245495449fe5bd6e225ce9a4
+    domain: binary_sensor
+  - type: moist
+    platform: device
+    device_id: c691a9ebd2f28bc5f006f8911b8c8904
+    entity_id: binary_sensor.water_leak_bath_bath_water_leak
+    domain: binary_sensor
+  - type: moist
+    platform: device
+    device_id: 98457a611ed25616b838cb0add6b890e
+    entity_id: binary_sensor.water_leak_bath_sink_water_leak
+    domain: binary_sensor
+  condition: []
+  action:
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id: switch.watercontrol_valves
+  - service: switch.turn_on
+    data: {}
+    target:
+      entity_id: switch.light_4_l8
+  - service: media_player.play_media
+    data:
+      media_content_type: text
+      media_content_id: Обнаружена протечка, перекрываю подачу воды!!!
+    target:
+      device_id:
+      - b7ae13cff2fb04a56f1611a7bd9fdb5d
+      - 49e5a1a4d554d924f61ecaa8968630bf
+      - e600d40f953494c41ec919d2148fd570
+      - 644968e9ab73b2930d141deb2aaec43f
+  - service: notify.telegram
+    data:
+      message: Обнаружена протечка воды. Перекрываю подачу.
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 2
+      milliseconds: 0
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id: switch.light_4_l8
+  mode: single
+- id: '1673173451954'
+  alias: Doorbell to Alice
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.0x00158d0003a5d05d_lock
+    - sensor.0x00158d0003a5d05d_action
+    to: doorbell
+  condition: []
+  action:
+  - service: media_player.play_media
+    data:
+      media_content_type: text
+      media_content_id: Звонок в дверь!
+      extra:
+        volume_level: 0.6
+    target:
+      device_id:
+      - b7ae13cff2fb04a56f1611a7bd9fdb5d
+      - e600d40f953494c41ec919d2148fd570
+      - 49e5a1a4d554d924f61ecaa8968630bf
+      - 644968e9ab73b2930d141deb2aaec43f
+      - 37e299b4ee90a2e39ae7e04328439ff4
+      - 8883de9fc71bef0b663c61faa4fbefb4
+      - f6dbda8398f290149bc8cb48a858452c
+  - service: notify.telegram
+    data:
+      message: Звонок в дверь!
+  mode: single
+- id: '1676583026190'
+  alias: Test_Light_By_Presense
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.presense_test_presence
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+  condition: []
+  action:
+  - service: switch.turn_on
+    data: {}
+    target:
+      entity_id: switch.light_2_l5
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id: switch.light_2_l5
+  mode: single
+- id: '1677143209213'
+  alias: On_Away_Run_Away_Script
+  description: ''
+  trigger:
+  - platform: event
+    event_type: away_mode
+  condition: []
+  action:
+  - service: script.new_script
+    data: {}
+  mode: single
+- id: '1677143329521'
+  alias: On_ReturnHome_Run_Script
+  description: ''
+  trigger:
+  - platform: event
+    event_type: return_home_mode
+  condition: []
+  action:
+  - service: script.1676313705945
+    data: {}
+  mode: single
+- id: '1677526169712'
+  alias: Close Cover on sunset
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunset
+    offset: 0
+  condition: []
+  action:
+  - service: cover.close_cover
+    data: {}
+    target:
+      area_id:
+      - gostinaia
+      - spalnia
+      - kukhnia
+  mode: single
+- id: '1677526210749'
+  alias: Open cover on sunrise
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunrise
+    offset: 0
+  condition: []
+  action:
+  - service: cover.open_cover
+    data: {}
+    target:
+      area_id:
+      - kukhnia
+  mode: single
+- id: '1688062326447'
+  alias: TurnOnWaterHeater
+  description: ''
+  trigger:
+  - platform: time
+    at: '23:00:00'
+  condition: []
+  action:
+  - type: turn_on
+    device_id: 47f466e2197ca1b56ea93ba2f3473098
+    entity_id: switch.plug_water_heater
+    domain: switch
+  mode: single
+- id: '1688062367698'
+  alias: TurnOffWaterHeater
+  description: ''
+  trigger:
+  - platform: time
+    at: 07:00:00
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 47f466e2197ca1b56ea93ba2f3473098
+    entity_id: switch.plug_water_heater
+    domain: switch
+  mode: single
+- id: '1694942205257'
+  alias: Unavailable entity detection & notification
+  description: ''
+  use_blueprint:
+    path: gmlupatelli/unavailable_entities_notification.yaml
+    input:
+      actions:
+      - service: notify.telegram
+        data:
+          message: 'У вас есть недоступные устройства: {{entities}}'
+          data:
+            parse_mode: html
+      exclude:
+        device_id:
+        - fd4ed129390c68716ee6b5ca4ee6abe5
+        - a5ddb672314ab72275816e22b91c1e0a
+- id: '1696509659566'
+  alias: Turn On Mirror When Heater Is On
+  description: ''
+  trigger:
+  - platform: device
+    type: turned_on
+    device_id: 156bb319cb4e575d641e681a1775d672
+    entity_id: c3ec9a6bd6247cdf3771e968416f7a1d
+    domain: switch
+  condition: []
+  action:
+  - type: turn_on
+    device_id: a86a73f9c0cded2becbaea4b58a0c3ca
+    entity_id: ca2d574ba695471945a76eb9fbd14f7c
+    domain: switch
+  mode: single

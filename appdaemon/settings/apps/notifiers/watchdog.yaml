@@ -1,0 +1,13 @@
+# uptime_watchdog:
+#   class: Watchdog
+#   module: watchdog
+#   constraint: input_boolean.watchdog_report
+#   entities:
+#     - sensor.uptime_drink_filter
+#     - sensor.uptime_sls
+#     - sensor.uptime_watercontrol
+#   check_interval: 60
+#   timeout: 900
+#   notify: telegram_monster
+#   global_dependencies:
+#     - globals

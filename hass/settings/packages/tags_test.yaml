@@ -1,0 +1,21 @@
+sensor:
+  - platform: mqtt_room
+    device_id: "iphone_danil"
+    name: 'tag_danil_iphone'
+    state_topic: 'espresense/devices/iphone_danil'
+    timeout: 30
+    away_timeout: 300
+
+  - platform: mqtt_room
+    device_id: "iphone_svetlana"
+    name: 'tag_svetlana_iphone'
+    state_topic: 'espresense/devices/iphone_svetlana'
+    timeout: 30
+    away_timeout: 300
+
+homeassistant:
+  customize:
+    sensor.tag_danil_iphone:
+      friendly_name: Данил (телефон)
+    sensor.tag_svetlana_iphone:
+      friendly_name: Света (телефон)

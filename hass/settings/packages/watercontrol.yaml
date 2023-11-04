@@ -1,0 +1,33 @@
+#################################################
+#                WATER                          #
+#################################################
+mqtt:
+  sensor:
+    - unique_id: counter_cold
+      state_topic: 'home/watercontrol/counter3_1'
+      name: 'counter_cold'
+      value_template: '{{ (value | float ) }}'
+      unit_of_measurement: 'm3'
+    - unique_id: counter_hot
+      state_topic: 'home/watercontrol/counter3_2'
+      name: 'counter_hot'
+      value_template: '{{ (value | float ) }}'
+      unit_of_measurement: 'm3'
+    - unique_id: uptime_watercontrol
+      state_topic: 'home/watercontrol/$uptime'
+      name: 'uptime_watercontrol'
+      value_template: '{{ value | int }}'
+  switch:
+    - unique_id: water_valve
+      name: water_valve
+      state_topic: "home/watercontrol/valves"
+      command_topic: "home/watercontrol/valves/set"
+      payload_on: true
+      payload_off: false
+      optimistic: false
+      retain: false
+
+homeassistant:
+  customize:
+    switch.water_valve:
+      friendly_name: Подача воды

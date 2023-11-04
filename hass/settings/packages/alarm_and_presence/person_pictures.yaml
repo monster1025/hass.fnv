@@ -1,0 +1,6 @@
+homeassistant:
+  customize:
+    person.danil:
+      entity_picture: "/local/danil.jpg"
+    person.svetlana:
+      entity_picture: "/local/svetlana.jpg"

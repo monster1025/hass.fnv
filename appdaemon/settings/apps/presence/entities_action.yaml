@@ -1,0 +1,18 @@
+#################################
+#        HOME PRESENSE          #
+#################################
+entities_action:
+  module: entities_action
+  class: EntitiesByPresence
+  away_entities:
+    - switch.light_bath
+    - switch.shower_mirror
+    - switch.light_bath_mirror
+    - switch.switch_mirror_bath_heater
+    - light.danil_bedside_lamp_rgbww_light
+    - light.svetlana_bedside_lamp_rgbww_light
+    # - script.away_mode
+  return_entities:
+    # - script.return_home
+  global_dependencies:
+    - globals

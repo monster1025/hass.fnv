@@ -1,0 +1,10 @@
+---
+input_select:
+  presence_extended:
+    name: presence_extended
+    options:
+      - 'Away'
+      - 'Home'
+      - 'Just Arrived'
+      - 'Just Left'
+      - 'Holidays'

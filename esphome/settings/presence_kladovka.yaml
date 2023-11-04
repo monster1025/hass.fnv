@@ -1,0 +1,62 @@
+#===============================================================================
+# Прошивка для пат Happy Bubbles
+# NodeMCU ESP8266
+#===============================================================================
+substitutions:
+  device_name: presence_kladovka
+  upper_devicename: PresenceKladovka
+  room: kladovka
+#===============================================================================  
+esphome:
+  name: ${device_name}
+  platform: ESP8266
+  board: d1_mini
+  includes:
+    - presence.h
+    
+# Настройки Wi-Fi
+wifi:
+  ssid: !secret wifi_24_name
+  password: !secret wifi_24_pass
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "$upper_devicename Fallback"
+    password: !secret esphome_captive_pass
+
+captive_portal:
+
+
+api: # Enable Home Assistant API
+  password: !secret esphome_pass
+  reboot_timeout: 0s      
+
+ota: 
+  password: !secret esphome_pass
+
+web_server:
+  port: 80
+
+logger:
+  baud_rate: 0
+
+mqtt:
+  broker: !secret mqtt_ip
+  username: !secret mqtt_user
+  password: !secret mqtt_password
+
+custom_component:
+- lambda: |-
+    auto hb = new HappyBubblesDevice("${room}");
+    App.register_component(hb);
+    return {hb};
+
+switch:
+- platform: custom
+  lambda: |-
+    auto ble_switch = new BleSwitch();
+    App.register_component(ble_switch);
+    return {ble_switch};
+
+  switches:
+    name: "Ble scan enable"

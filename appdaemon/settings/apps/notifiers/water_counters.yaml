@@ -1,0 +1,11 @@
+#################################
+#     WATER COUNTERS ALARM      #
+#################################
+water_counters:
+  class: WaterCountersAlarm
+  module: water_counters
+  constraint: input_boolean.water_counters_report
+  checkup_threasold: 31
+  send_threasold: 31
+  global_dependencies:
+    - globals
