@@ -41,11 +41,12 @@ class Battery(hass.Hass):
             battery = device["attributes"]["battery"]
           elif "battery_level" in device["attributes"]:
             battery = device["attributes"]["battery_level"]
-          else:
-            for attr in device["attributes"]:
-              if '_battery' in attr:
-                print(attr)
-                battery = device["attributes"][attr]
+          elif '_battery' in device['entity_id']:
+            battery = self.get_state(device['entity_id'])
+            if not battery.isdigit():
+              continue
+            battery = int(battery)
+            print('{} = {}'.format(device['entity_id'], battery))
           if battery != None:
             print('{} = {}'.format(device['entity_id'], battery))
             if battery < self.args["threshold"] and battery != 0:

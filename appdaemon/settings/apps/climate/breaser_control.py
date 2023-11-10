@@ -61,6 +61,7 @@ class BreaserControl(hass.Hass):
       self.set_mode_by_co2(co2_level, True)
 
   def set_mode_by_co2(self, co2_level, is_night):
+    self.heat_mode_by_time()
     if co2_level < 500:
       self.log('CO2 is fine: {}. Set auto mode.'.format(co2_level))
       self.auto_mode()
@@ -120,6 +121,7 @@ class BreaserControl(hass.Hass):
   def away_mode_event(self, event_id, event_args, kwargs):
     if 'constraint' in self.args and not self.constrain_input_boolean(self.args['constraint']):
       return
+    self.turn_on(self.args['entity'])
     self.away_mode()
 
   def night_mode_timer_event(self, kwargs):

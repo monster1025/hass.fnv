@@ -41,9 +41,9 @@ class WaterLeak(hass.Hass):
 
   def water_leak(self, entity, attribute, old, new, kwargs):
     if new == "on":
-      self.send_alarm()
+      self.send_alarm(entity)
 
-  def send_alarm(self):
+  def send_alarm(self, entity_id):
     self.log('water leak alarm triggered!')
     if 'constraint' in self.args and not self.constrain_input_boolean(self.args['constraint']):
       return
@@ -54,7 +54,7 @@ class WaterLeak(hass.Hass):
     self.call_service("mqtt/publish", topic = 'home/watercontrol/bath/valve/set', payload = 'close')
     self.call_service("xiaomi_aqara/play_ringtone", gw_mac=self.gw_mac, ringtone_id=self.ringtone, ringtone_vol=100)
 
-    message = "ВНИМАНИЕ! В ваше отстутствие сработал датчик протечки воды!!! Выключаю подачу воды."
+    message = "ВНИМАНИЕ! В ваше отстутствие сработал датчик протечки воды ({})!!! Выключаю подачу воды.".format(self.friendly_name(entity_id))
     self.notify(message, name = self.args['notify'])
 
     message = "Состояние датчиков протечки:\n"
