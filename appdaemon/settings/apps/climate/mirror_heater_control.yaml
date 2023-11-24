@@ -22,19 +22,19 @@ mirror_heater_control:
 #################################
 #  Контроль подогрева зеркал    #
 #################################
-mirror_heater_control_shower:
-  # Название класса
-  class: MirrorHeater
-  module: mirror_heater_control
+# mirror_heater_control_shower:
+#   # Название класса
+#   class: MirrorHeater
+#   module: mirror_heater_control
   
-  entity: sensor.temperature_shower_humidity
-  control_entities: 
-    - switch.shower_mirror
-    - switch.switch_mirror_shower_heater
+#   entity: sensor.temperature_shower_humidity
+#   control_entities: 
+#     - switch.shower_mirror
+#     - switch.switch_mirror_shower_heater
 
-  constraint: input_boolean.shower_mirror_heat
-  threshold: 85
-  timeout: 3600 #3600=1hr
+#   constraint: input_boolean.shower_mirror_heat
+#   threshold: 85
+#   timeout: 3600 #3600=1hr
 
-  global_dependencies:
-    - globals
+#   global_dependencies:
+#     - globals

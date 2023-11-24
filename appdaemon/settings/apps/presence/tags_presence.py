@@ -63,7 +63,9 @@ class TagsPresence(hass.Hass):
         attr = self.get_state(person, attribute='all').get('attributes', None)
         # self.log(attr)
         # attr['state'] = tags_by_person[person][0]
-        self.set_state(person, state = tags_by_person[person][0], attributes = attr)
+
+        # disable set person state
+        # self.set_state(person, state = tags_by_person[person][0], attributes = attr)
 
     homeSensor = '{}{}'.format(self.args['sensor_prefix'],'home')
     self.create_sensor(homeSensor, homePresence)

@@ -19,3 +19,29 @@ homeassistant:
       friendly_name: Данил (телефон)
     sensor.tag_svetlana_iphone:
       friendly_name: Света (телефон)
+
+automation:
+  alias: "Presence: Beacons"
+  description: ""
+  trigger:
+    - platform: state
+      entity_id:
+        - sensor.tag_danil_iphone
+        - sensor.tag_svetlana_iphone
+      enabled: true
+  condition: []
+  action:
+    - service: device_tracker.see
+      data:
+        dev_id: "{{ trigger.entity_id.split('.')[1] }}"
+        location_name: |
+          {% set locations = ['mainroom'] %}
+          {% if trigger.to_state.state in locations  %}
+            home
+          {% elif trigger.to_state.state not in locations %}
+            not_home
+          {% else %}
+             unknown
+          {% endif %}
+        source_type: router
+  mode: restart

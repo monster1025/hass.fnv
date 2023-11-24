@@ -18,7 +18,7 @@ import datetime
 class WaterValveControl(hass.Hass):
   standby_power_limit = 15
   current_wait_cycle = 0
-  wait_cycles = 3
+  wait_cycles = 2
   timer = None
   listen_event_handle_list = []
   timers = []
@@ -76,7 +76,7 @@ class WaterValveControl(hass.Hass):
       self.turn_off_water_devices()
       self.cancel_current_timer()
 
-  def turn_off_water_devices():
+  def turn_off_water_devices(self):
     self.log("Turning off water devices.")
     self.turn_off(self.args['water_valve'])
     for device in self.args['water_devices']:
@@ -87,16 +87,8 @@ class WaterValveControl(hass.Hass):
     devices = self.args['water_devices']
     for device in devices:
       state = self.get_state(device)
-      attributes = self.get_state(device, attribute = "all")
-      if attributes == None:
-      	continue
-      if 'attributes' in attributes:
-        attributes = attributes['attributes']
-      if 'load_power' not in attributes:
-        continue
-      load_power = attributes['load_power']
-      self.log('{} state: {}, load power is: {}'.format(device, state, load_power))
-      if state == 'off' or load_power < self.standby_power_limit:
+      self.log('{} state: {}'.format(device, state))
+      if state == 'off':
         continue
       powered_on_devices.append(device)
     return powered_on_devices

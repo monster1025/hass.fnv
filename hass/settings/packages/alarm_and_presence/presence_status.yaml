@@ -8,3 +8,8 @@ input_select:
       - 'Just Arrived'
       - 'Just Left'
       - 'Holidays'
+
+input_boolean:
+  guest_mode:
+    name: Наличие гостей
+    icon: mdi:alert-octagon

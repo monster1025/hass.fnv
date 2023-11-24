@@ -42,6 +42,7 @@ class BreaserControl(hass.Hass):
       self.listen_event_handle_list.append(self.listen_state(self.state_change, self.args['co2_sensor']))
 
   def state_change(self, entity, attribute, old, new, kwargs):
+    self.heat_mode_by_time()
     if 'constraint' in self.args and not self.constrain_input_boolean(self.args['constraint']):
       return
 

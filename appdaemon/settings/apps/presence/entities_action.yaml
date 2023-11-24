@@ -7,12 +7,22 @@ entities_action:
   away_entities:
     - switch.light_bath
     - switch.shower_mirror
+    - switch.switch_mirror_shower_heater
     - switch.light_bath_mirror
     - switch.switch_mirror_bath_heater
     - light.danil_bedside_lamp_rgbww_light
     - light.svetlana_bedside_lamp_rgbww_light
-    # - script.away_mode
+    - media_player.bedroom_tv
+    - media_player.kitchen_tv
+    - media_player.mainroom_tv
   return_entities:
-    # - script.return_home
+    
+  thremostats:
+    - climate.radiator_childroom
+    - climate.radiator_mainroom
+    - climate.radiator_kitchen
+    - climate.radiator_bedroom
+    - climate.radiator_bedroom_balcony
   global_dependencies:
     - globals
+
