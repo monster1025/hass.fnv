@@ -35,9 +35,7 @@ services:
     #  - "24321:4321/udp"
     #  - "251827:51827" #Homekit
     devices:
-    #  - /dev/hass-wolpipe:/dev/hass-wolpipe
       - "/dev/ttyUSB0:/dev/ttyUSB0"
-    #  - "/dev/ttyACM0:/dev/ttyACM0"
     depends_on:
      - mosquitto
     #network_mode: "host"
@@ -80,8 +78,8 @@ services:
     volumes:
       - ./esphome/settings:/config
       - ./secrets/hass-fnv/settings/secrets.yaml:/config/secrets.yaml:ro
-    devices:
-     - "/dev/ttyUSB0:/dev/ttyUSB0"
+    #devices:
+    # - "/dev/ttyUSB0:/dev/ttyUSB0"
     network_mode: host
     logging:
       driver: json-file
