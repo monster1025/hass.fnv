@@ -65,7 +65,7 @@ def on_connect(client, userdata, rc, kwargs):
 	client.subscribe(PREFIX + "/valves/set")
 	client.subscribe(PREFIX + "/counter3_1/set")
 	client.subscribe(PREFIX + "/counter3_2/set")
-	config = '{"~": "' + PREFIX + '/valves", "name": "watercontrol_valves", "device_class": "switch", "state_topic": "~", "command_topic":"~/set"}'
+	config = '{"~": "' + PREFIX + '/valves", "name": "watercontrol_valves", "device_class": "switch", "state_topic": "~", "command_topic":"~/set","unique_id": "watercontrol_neptun_' + NEPTUN_IP + '"}'
 	client.publish("homeassistant/switch/watercontrol/valves/config", payload=config, qos=0, retain=True)
 
 def refresh_loop(client):

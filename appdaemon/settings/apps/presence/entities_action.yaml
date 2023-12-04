@@ -5,13 +5,30 @@ entities_action:
   module: entities_action
   class: EntitiesByPresence
   away_entities:
-    - switch.light_bath
+    # din rail lights
+    - light.light_mainroom_mainlamp
+    - light.light_mainroom_spotlights
+    - light.light_mainroom_pc_spotlight
+    - light.light_balcony_spotlight
+    - light.light_bedroom_spotlights
+    - light.light_bedroom_nightlight_left
+    - light.light_bedroom_nightlight_right
+    - light.light_bedroom_pc_spotlight
+    - light.light_bedroom_mainlight
+    - light.light_bedroom_pc_nightlight
+    - light.light_bath
+
+    # bedside lamps
+    - light.danil_bedside_lamp_rgbww_light
+    - light.svetlana_bedside_lamp_rgbww_light
+
+    # mirrors and heaters
     - switch.shower_mirror
     - switch.switch_mirror_shower_heater
     - switch.light_bath_mirror
     - switch.switch_mirror_bath_heater
-    - light.danil_bedside_lamp_rgbww_light
-    - light.svetlana_bedside_lamp_rgbww_light
+
+    # media
     - media_player.bedroom_tv
     - media_player.kitchen_tv
     - media_player.mainroom_tv
