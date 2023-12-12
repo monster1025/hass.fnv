@@ -2,7 +2,7 @@ import appdaemon.plugins.hass.hassapi as hass
 import fnmatch
 
 #
-# Security sensors alarm notification
+# Fire sensors alarm notification
 # Send notification if some movement is detecter or door any is open
 # while nobody is home
 #
@@ -16,9 +16,9 @@ import fnmatch
 # Version 1.0:
 #   Initial Version
 
-class SecuritySensorsReport(hass.Hass):
+class FireSensorsReport(hass.Hass):
   def initialize(self):
-    if 'sensor_parts' not in self.args or 'ha_panel' not in self.args or 'notify' not in self.args:
+    if 'sensor_parts' not in self.args or 'notify' not in self.args:
       self.error("Please provide sensor_parts, ha_panel and notify in config!")
       return
     
@@ -36,24 +36,13 @@ class SecuritySensorsReport(hass.Hass):
       return
 
     if old != new and new == "on":
-      alarm_panel_state = self.get_state(self.args['ha_panel'])
-      if alarm_panel_state != "armed_away":
-        return
-
-      vacuum_state = "docked"
-      if "vacuum" in self.args:
-        vacuum_state = self.get_state(self.args["vacuum"])
-      #Если работает пылесос и сработал датчик движения
-      if vacuum_state == 'cleaning' and 'binary_sensor.motion' in entity:
-        self.log('Motion sensor is triggered, but vacuum is cleaning.')
-        return
+      self.log('Fire sensor is triggered!!!')
       self.alarm_triggered(entity, old, new)
 
   def alarm_triggered(self, entity, old, new):
     self.log('alarm triggered')
-    # self.call_service("alarm_control_panel/alarm_trigger", entity_id = self.args['ha_panel'])
 
     friendly_name = self.friendly_name(entity)
     entity = entity.replace('_', '-')
-    message = "В ваше отсутствие сработал датчик безопастности {} ({}) = {}->{}!".format(friendly_name, entity, old, new)
+    message = "Сработал датчик пожарной сигнализации {} ({}) = {}->{}!".format(friendly_name, entity, old, new)
     self.notify(message, name = self.args['notify'])

@@ -1,0 +1,9 @@
+fire_sensors:
+  module: fire_sensors
+  class: FireSensorsReport
+  sensor_parts:
+    - binary_sensor.smoke_detector_*_smoke
+  constraint: input_boolean.fire_sensors_report
+  notify: telegram
+  global_dependencies:
+    - globals

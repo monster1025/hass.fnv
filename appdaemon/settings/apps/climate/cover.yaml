@@ -16,9 +16,9 @@ cover_action:
     - cover.curtain_bedroom_balcony
     - cover.curtain_kitchen
     - cover.curtain_mainroom
-  open_at_sunrise:
-    - cover.curtain_kitchen
-    - cover.curtain_mainroom
+  #open_at_sunrise:
+    #- cover.curtain_kitchen
+    #- cover.curtain_mainroom
   global_dependencies:
     - globals
 

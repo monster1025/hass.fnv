@@ -2,10 +2,10 @@ security_sensors:
   module: security_sensors
   class: SecuritySensorsReport
   sensor_parts:
-    - binary_sensor.motion_
-    - binary_sensor.door_
-    - binary_sensor.smoke_detector_
-    - binary_sensor.water_leak_
+    - binary_sensor.motion_*_occupancy
+    - binary_sensor.door_*_contact
+    - binary_sensor.smoke_detector_*_smoke
+    - binary_sensor.water_leak_*_leak
   constraint: input_boolean.security_sensors_report
   ha_panel: alarm_control_panel.ha_alarm
   vacuum: vacuum.dreame_p2027_6b1e_robot_cleaner
