@@ -73,18 +73,9 @@ class LightControlHall(hass.Hass):
 
     entity = self.args['control_entity']
     state = self.get_state(entity)
-    if 'light_sensor' in self.args:
-      lux = int(self.get_state(self.args['light_sensor']))
-      self.log('light_sensor value is: {}'.format(lux))
-      if lux > 100:
-        state = 'on'
-      else:
-        state = 'off'
 
-    if state == 'off':
-      self.turn_on(entity)
-      self.turn_off(entity)
-      self.log("Light on ({}).".format(entity))
+    self.turn_on(entity)
+    self.log("Light on ({}).".format(entity))
 
   def control_entity_off(self, kwargs):
     if 'constraint' in self.args and not self.constrain_input_boolean(self.args['constraint']):
@@ -93,18 +84,8 @@ class LightControlHall(hass.Hass):
 
     entity = self.args['control_entity']
     state = self.get_state(entity)
-    if 'light_sensor' in self.args:
-      lux = int(self.get_state(self.args['light_sensor']))
-      self.log('light_sensor value is: {}'.format(lux))
-      if lux > 100:
-        state = 'on'
-      else:
-        state = 'off'
-
-    if state == 'on':
-      self.turn_on(entity)
-      self.turn_off(entity)
-      self.log("Light off.")
+    self.turn_off(entity)
+    self.log("Light off.")
     self.stop_timer()
 
   def stop_timer(self):

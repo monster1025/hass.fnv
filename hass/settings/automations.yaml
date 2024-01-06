@@ -144,3 +144,67 @@
           command: power_off_2
           device: ac
   mode: single
+- id: '1703092205692'
+  alias: Turn on curtain light when opened
+  description: ''
+  trigger:
+  - platform: device
+    device_id: 4b8180d9d908e128920565c0bd31e661
+    domain: cover
+    entity_id: 03d25d0c4f844c78905fa58906f7a383
+    type: opened
+  condition: []
+  action:
+  - type: turn_on
+    device_id: b446ed5b21362d52ea95df7a716274cc
+    entity_id: 0ff56edad96924c2438d3df1fa7b27f7
+    domain: switch
+  mode: single
+- id: '1703092227298'
+  alias: Turn off curtain light when closed
+  description: ''
+  trigger:
+  - platform: device
+    device_id: 4b8180d9d908e128920565c0bd31e661
+    domain: cover
+    entity_id: 03d25d0c4f844c78905fa58906f7a383
+    type: closed
+  condition: []
+  action:
+  - type: turn_off
+    device_id: b446ed5b21362d52ea95df7a716274cc
+    entity_id: 0ff56edad96924c2438d3df1fa7b27f7
+    domain: switch
+  mode: single
+- id: '1703092310991'
+  alias: Turn off curtain mainroom light when opened
+  description: ''
+  trigger:
+  - platform: device
+    device_id: ea11679f950e59cc987b8cd2b6ff5056
+    domain: cover
+    entity_id: 6d5198f293f74f55a7c6b97963b1eb38
+    type: closed
+  condition: []
+  action:
+  - type: turn_off
+    device_id: dced6c6681315aa231b49b28ec1b438f
+    entity_id: e9c511738ece30cf4b75c96023ba33ff
+    domain: switch
+  mode: single
+- id: '1703092334996'
+  alias: Turn on curtain mainroom light when opened
+  description: ''
+  trigger:
+  - platform: device
+    device_id: ea11679f950e59cc987b8cd2b6ff5056
+    domain: cover
+    entity_id: 6d5198f293f74f55a7c6b97963b1eb38
+    type: opened
+  condition: []
+  action:
+  - type: turn_on
+    device_id: dced6c6681315aa231b49b28ec1b438f
+    entity_id: e9c511738ece30cf4b75c96023ba33ff
+    domain: switch
+  mode: single

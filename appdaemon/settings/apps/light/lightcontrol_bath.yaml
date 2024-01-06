@@ -8,6 +8,7 @@ light_control_bath:
   door_sensor: binary_sensor.door_bath_contact
   control_entity: switch.light_bath
   control_night_entity: switch.light_bath_mirror
+  control_mini_light_entity: light.light_bath_shelf
   timeout: 240
   constraint: input_boolean.bath_light_control
   global_dependencies:
@@ -18,7 +19,9 @@ light_control_shower:
   class: LightControlBath
   sensor: binary_sensor.motion_shower_center_occupancy
   door_sensor: binary_sensor.door_shower_contact
-  control_entity: switch.shower_mirror
+  control_entity: switch.light_shower_main_spotlights
+  control_night_entity: switch.shower_mirror  
+  control_mini_light_entity: light.light_shower_shelf_light
   timeout: 240
   constraint: input_boolean.shower_light_control
   global_dependencies:

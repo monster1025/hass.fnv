@@ -75,6 +75,8 @@ class LightControlBath(hass.Hass):
     if self.get_state(entity) == 'off':
       self.turn_on(entity)
       self.log("Light on.")
+    if 'control_mini_light_entity' in self.args:
+      self.turn_on(self.args['control_mini_light_entity'])
 
   def control_entity_off(self, kwargs):
     #if 'constraint' is off - we dont need to do anything
@@ -91,6 +93,8 @@ class LightControlBath(hass.Hass):
     if self.get_state(entity) == 'on':
       self.turn_off(entity)
       self.log("Light off.")
+    if 'control_mini_light_entity' in self.args:
+      self.turn_off(self.args['control_mini_light_entity'])
     self.stop_timer()
 
   def run_timer(self):
