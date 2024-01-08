@@ -1,6 +1,11 @@
 # Loads default set of integrations. Do not remove.
 default_config:
 
+logger:
+  default: warning
+  logs:
+    custom_components.yandex_smart_home: debug
+
 homeassistant:
   packages: !include_dir_named packages
   external_url: "https://home-fnv.yandex5.ru"

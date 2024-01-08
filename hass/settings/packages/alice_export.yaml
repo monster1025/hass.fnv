@@ -1,0 +1,53 @@
+yandex_smart_home:
+  filter:
+    include_domains:
+      - cover
+    include_entities:
+      - climate.radiator_bedroom
+      - climate.radiator_bedroom_balcony
+      - climate.radiator_childroom
+      - climate.radiator_kitchen
+      - climate.radiator_mainroom
+      - fan.ventilation_bath
+      - fan.ventilation_shower
+      - fan.ventiliatsionnaia_sistema
+      - light.danil_bedside_lamp_rgbww_light
+      - light.light_balcony_spotlight
+      - light.light_bath
+      - light.light_bath_shelf
+      - light.light_bedroom_mainlight
+      - light.light_bedroom_nightlight_left
+      - light.light_bedroom_nightlight_right
+      - light.light_bedroom_pc_nightlight
+      - light.light_bedroom_pc_spotlight
+      - light.light_bedroom_spotlights
+      - light.light_childroom_bed
+      - light.light_childroom_main
+      - light.light_childroom_spotlights
+      - light.light_hall_long
+      - light.light_kitchen_bar_lamp
+      - light.light_kitchen_set
+      - light.light_kitchen_spotlights
+      - light.light_kitchen_table_lamp
+      - light.light_mainroom_pc_spotlight
+      - light.light_shower_main_spotlights
+      - light.light_shower_shelf_light
+      - light.light_shower_shower_spotlights
+      - light.plug_yolka
+      - light.svetlana_bedside_lamp_rgbww_light
+      - media_player.bedroom_tv
+      - media_player.kitchen_tv
+      - media_player.mainroom_tv
+      - script.away_mode
+      - switch.light_bath_mirror
+      - switch.light_mainroom_mainlamp
+      - switch.light_mainroom_spotlights
+      - switch.shower_mirror
+      - switch.watercontrol_valves
+      - vacuum.dreame_p2027_6b1e_robot_cleaner
+    #include_entity_globs:
+    #  - sensor.temperature_*
+    #exclude_entities:
+    #  - light.highlight
+    #exclude_entity_globs:
+    #  - sensor.weather_*

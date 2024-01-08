@@ -26,3 +26,14 @@ light_control_shower:
   constraint: input_boolean.shower_light_control
   global_dependencies:
     - globals
+
+light_control_shower_shower:
+  module: lightcontrol_bath
+  class: LightControlBath
+  sensor: binary_sensor.motion_shower_shower_occupancy
+  door_sensor: binary_sensor.door_shower_contact
+  control_entity: switch.light_shower_shower_spotlights
+  timeout: 360
+  constraint: input_boolean.shower_light_control
+  global_dependencies:
+    - globals
