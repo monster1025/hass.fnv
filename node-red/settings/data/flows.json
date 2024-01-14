@@ -1,0 +1,43 @@
+[
+    {
+        "id": "86397968195ad03c",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "d2225d1f8f8bc90a",
+        "type": "http in",
+        "z": "86397968195ad03c",
+        "name": "",
+        "url": "http://ya.ru",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 320,
+        "y": 180,
+        "wires": [
+            [
+                "fd0f47687c3493fe"
+            ]
+        ]
+    },
+    {
+        "id": "fd0f47687c3493fe",
+        "type": "debug",
+        "z": "86397968195ad03c",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 580,
+        "y": 280,
+        "wires": []
+    }
+]

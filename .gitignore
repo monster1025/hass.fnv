@@ -7,6 +7,7 @@
 *.fault
 __pycache__/
 hass/settings/.storage
+hass/settings/*.log
 secrets/
 certbot/settings/data/
 hass/settings/custom_components/
@@ -15,3 +16,4 @@ zigbee2mqtt/settings/configuration.yaml
 zigbee2mqtt/settings/coordinator_backup.json
 zigbee2mqtt/settings/state.json
 nginx/settings/site-confs/z2m_htpasswd
+postgres/settings/data/

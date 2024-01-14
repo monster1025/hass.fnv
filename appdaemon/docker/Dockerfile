@@ -1,4 +1,9 @@
 FROM python:3.10
+RUN apt update && apt -y install locales && locale-gen ru_RU.UTF-8
+ENV LANG ru_RU.UTF-8
+ENV LANGUAGE ru_RU:ru
+ENV LC_ALL ru_RU.UTF-8
+ENV PYTHONIOENCODING=utf-8
 
 VOLUME /conf
 VOLUME /certs
@@ -11,7 +16,7 @@ WORKDIR /usr/src/app
 # Download and build appdaemon, 4.0.0b2
 # --branch=4.0.0b1
 RUN git clone --recurse-submodules https://github.com/home-assistant/appdaemon.git .
-RUN pip install --upgrade pip . && pip3 install requests python-dateutil
+RUN pip install --upgrade pip . && pip3 install requests python-dateutil beautifulsoup4
 
 # Start script
 RUN chmod +x /usr/src/app/dockerStart.sh

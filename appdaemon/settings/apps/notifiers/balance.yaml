@@ -28,3 +28,19 @@ balance_low_report_belorechenskaya:
   notify: telegram
   global_dependencies:
     - globals
+
+balance_low_report_fonvizina:
+  class: Balance
+  module: balance
+  constraint: input_boolean.balance_report
+  name: Фонвизина
+  entity_ids:
+    fonvizina_epd_balance: sensor.fonvizina_epd_balance
+    fonvizina_trash_balance: sensor.fonvizina_trash_balance
+    fonvizina_kladovka_balance: sensor.fonvizina_kladovka_balance
+  always_send: 0
+  threshold: -100
+  inverted: true
+  notify: telegram
+  global_dependencies:
+    - globals

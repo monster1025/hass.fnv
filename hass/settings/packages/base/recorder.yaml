@@ -1,0 +1,40 @@
+recorder:
+  db_url: !secret recorder_db_url
+  purge_keep_days: 365
+  include:
+    domains:
+      - alarm_control_panel
+      - binary_sensor
+      - climate
+      - light
+      - lock
+      - sensor
+      - switch
+      - vacuum
+      - person
+      - counter
+  exclude:
+    domains:
+      - automation
+      - media_player
+    entity_globs:
+      - sensor.tag_*
+    entities:
+      - sun.sun
+      - binary_sensor.belorechenskaya_away
+      - binary_sensor.cube_158d00011065e3_2
+      - binary_sensor.living_room_thermostat_fan
+      - binary_sensor.living_room_thermostat_has_leaf
+      - binary_sensor.living_room_thermostat_is_locked
+      - binary_sensor.living_room_thermostat_is_using_emergency_heat
+      - binary_sensor.living_room_thermostat_online
+      - sensor.living_room_thermostat_hvac_state
+      - sensor.living_room_thermostat_operation_mode
+      - sensor.living_room_thermostat_target
+      - sensor.living_room_thermostat_temperature
+      - sensor.memory_free
+      - sensor.processor_use
+      - sensor.ssl_certificate_expiry
+      - sensor.swap_use_percent
+      - sensor.belorechenskaya_eta
+      - sensor.disk_use_percent

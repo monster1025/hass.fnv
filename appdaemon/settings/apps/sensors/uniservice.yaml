@@ -1,0 +1,18 @@
+
+#################################
+#   MOS.RU DATA RETRIEVER       #
+#################################
+uniservice_epd_sensor:
+  class: EpdBalanceSensor
+  module: uniservice
+  login: !secret uniservice_login
+  pwd: !secret uniservice_pwd
+  accounts: !secret uniservice_accounts
+  entity_ids:
+    fonvizina_epd_balance: sensor.fonvizina_epd_balance
+    fonvizina_trash_balance: sensor.fonvizina_trash_balance
+    fonvizina_kladovka_balance: sensor.fonvizina_kladovka_balance
+  global_dependencies:
+    - globals
+    
+    

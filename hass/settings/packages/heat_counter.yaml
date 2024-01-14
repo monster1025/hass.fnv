@@ -1,0 +1,29 @@
+# соответственно 1кВт·ч/импульс и 100 л/импульс
+sensor:
+  - platform: template
+    sensors:
+      heat_total:
+        unit_of_measurement: 'gKal'
+        value_template: "{{ states('counter.heat_counter') | float + 32.4790 | round(4) }}"
+        #7072.7 - разница показаний.
+
+automation:
+  - alias: Heat counter on sensor trigger
+    description: ''
+    trigger:
+    - entity_id: binary_sensor.contact_heat_counter_contact
+      platform: state
+      from: 'off'
+      to: 'on'
+    action:
+    - data:
+        entity_id:
+        - counter.heat_counter
+      service: counter.increment
+
+counter:
+  heat_counter:
+    step: 1
+    restore: true
+  test:
+    restore: true
