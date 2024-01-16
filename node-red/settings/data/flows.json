@@ -177,7 +177,7 @@
         "event": "doorbell_call",
         "data": "{\"doorbell_pic\":payload}",
         "dataType": "jsonata",
-        "x": 1060,
+        "x": 1020,
         "y": 160,
         "wires": [
             []

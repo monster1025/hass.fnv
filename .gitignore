@@ -25,3 +25,5 @@ node-red/settings/data/*.backup
 node-red/settings/data/.config.users.json
 node-red/settings/data/package-lock.json
 node-red/settings/data/package.json
+node-red/settings/data/.config.nodes.json
+node-red/settings/data/.config.runtime.json
