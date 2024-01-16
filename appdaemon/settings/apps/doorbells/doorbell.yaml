@@ -1,0 +1,17 @@
+#################################
+#           INTERCOM            #
+#################################
+doorbell:
+  module: doorbell
+  class: Doorbell
+  sensor: binary_sensor.doorbell_ring
+  camera: camera.domofon
+  notify: telegram
+  alices: 
+    - media_player.yandex_station_m00r46000m53db
+    - media_player.yandex_station_m00fhe2003seqr
+    - media_player.yandex_station_ly00000000000008674600007209d3f5
+    - media_player.yandex_station_ff98f029ab48468d28c557be
+    - media_player.yandex_station_u003jc100phn9k
+  global_dependencies:
+    - globals

@@ -1,43 +1,186 @@
 [
     {
-        "id": "86397968195ad03c",
+        "id": "32f338f62fe84201",
         "type": "tab",
-        "label": "Flow 1",
+        "label": "Doorbell",
         "disabled": false,
         "info": "",
         "env": []
     },
     {
-        "id": "d2225d1f8f8bc90a",
-        "type": "http in",
-        "z": "86397968195ad03c",
-        "name": "",
-        "url": "http://ya.ru",
-        "method": "get",
-        "upload": false,
-        "swaggerDoc": "",
-        "x": 320,
-        "y": 180,
+        "id": "9d88782117d11324",
+        "type": "server",
+        "name": "Home Assistant",
+        "version": 5,
+        "addon": false,
+        "rejectUnauthorizedCerts": true,
+        "ha_boolean": "y|yes|true|on|home|open",
+        "connectionDelay": true,
+        "cacheJson": true,
+        "heartbeat": false,
+        "heartbeatInterval": "30",
+        "areaSelector": "friendlyName",
+        "deviceSelector": "friendlyName",
+        "entitySelector": "friendlyName",
+        "statusSeparator": ": ",
+        "statusYear": "hidden",
+        "statusMonth": "short",
+        "statusDay": "numeric",
+        "statusHourCycle": "default",
+        "statusTimeFormat": "h:m",
+        "enableGlobalContextStore": false
+    },
+    {
+        "id": "bac739064a0752d3",
+        "type": "tuya-smart-device",
+        "z": "32f338f62fe84201",
+        "deviceName": "Dorbell parter",
+        "disableAutoStart": false,
+        "deviceId": "",
+        "deviceKey": "",
+        "storeAsCreds": true,
+        "deviceIp": "192.168.1.113",
+        "retryTimeout": 1000,
+        "findTimeout": 10000,
+        "tuyaVersion": "3.3",
+        "eventMode": "event-both",
+        "x": 140,
+        "y": 80,
         "wires": [
             [
-                "fd0f47687c3493fe"
+                "9d1686a6ee7e63cc",
+                "7e8087c473a88f87"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "9d1686a6ee7e63cc",
+        "type": "function",
+        "z": "32f338f62fe84201",
+        "name": "Add timestamp to LOG",
+        "func": "var now = new Date();\n// Create formatted time\nvar yyyy = now.getFullYear();\nvar mm = now.getMonth() < 9 ? \"0\" + (now.getMonth() + 1) : (now.getMonth() + 1); // getMonth() is zero-based\nvar dd = now.getDate() < 10 ? \"0\" + now.getDate() : now.getDate();\nvar hh = now.getHours() < 10 ? \"0\" + now.getHours() : now.getHours();\nvar mmm = now.getMinutes() < 10 ? \"0\" + now.getMinutes() : now.getMinutes();\nvar ss = now.getSeconds() < 10 ? \"0\" + now.getSeconds() : now.getSeconds();\nvar time = yyyy + \"-\" + mm + \"-\" + dd + \" \" + hh + \":\" + mmm + \":\" + ss;\n\nmsg.payload = { Time: time, Message: msg.payload }\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "66848b1b1b258fcd",
+        "type": "inject",
+        "z": "32f338f62fe84201",
+        "name": "Fake message",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"data\":{\"dps\":{\"154\":\"aHR0cHM6Ly9yZWdpb3dlYmNhbS5kZS9maWxlYWRtaW4vdXNlcl91cGxvYWQvMDFfc3RvcmNoX2tpcmNoemFydGVuMjAyMS5qcGc/dmVyPTE2MzkzMDIyNjYzNDk=\"},\"t\":1664969089},\"deviceId\":\"bfd52cb7f15a171ef3qznk\",\"deviceName\":\"Dorbell pietro\"}",
+        "payloadType": "json",
+        "x": 160,
+        "y": 160,
+        "wires": [
+            [
+                "7e8087c473a88f87"
             ]
         ]
     },
     {
-        "id": "fd0f47687c3493fe",
-        "type": "debug",
-        "z": "86397968195ad03c",
-        "name": "debug 1",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 580,
-        "y": 280,
-        "wires": []
+        "id": "7e8087c473a88f87",
+        "type": "switch",
+        "z": "32f338f62fe84201",
+        "name": "If contains picture",
+        "property": "payload.data.dps",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "hask",
+                "v": "154",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 370,
+        "y": 160,
+        "wires": [
+            [
+                "ef4a301c9859d91a"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "ef4a301c9859d91a",
+        "type": "change",
+        "z": "32f338f62fe84201",
+        "name": "Extract base64 adress",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.data.dps[\"154\"]",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 600,
+        "y": 160,
+        "wires": [
+            [
+                "5936f72cfa385634"
+            ]
+        ]
+    },
+    {
+        "id": "5936f72cfa385634",
+        "type": "base64",
+        "z": "32f338f62fe84201",
+        "name": "Decode base64 adress",
+        "action": "b64",
+        "property": "payload",
+        "x": 830,
+        "y": 160,
+        "wires": [
+            [
+                "e8ac1a2ea3533224"
+            ]
+        ]
+    },
+    {
+        "id": "e8ac1a2ea3533224",
+        "type": "ha-fire-event",
+        "z": "32f338f62fe84201",
+        "name": "doorbell",
+        "server": "9d88782117d11324",
+        "version": 0,
+        "event": "doorbell_call",
+        "data": "{\"doorbell_pic\":payload}",
+        "dataType": "jsonata",
+        "x": 1060,
+        "y": 160,
+        "wires": [
+            []
+        ]
     }
 ]

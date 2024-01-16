@@ -17,3 +17,11 @@ zigbee2mqtt/settings/coordinator_backup.json
 zigbee2mqtt/settings/state.json
 nginx/settings/site-confs/z2m_htpasswd
 postgres/settings/data/
+node-red/settings/data/.npm/
+node-red/settings/data/lib/
+node-red/settings/data/node-modules/
+node-red/settings/data/flows_cred.json
+node-red/settings/data/*.backup
+node-red/settings/data/.config.users.json
+node-red/settings/data/package-lock.json
+node-red/settings/data/package.json

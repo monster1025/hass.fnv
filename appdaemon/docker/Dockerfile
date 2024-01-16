@@ -26,7 +26,8 @@ RUN pip3 install \
       #emp_mos_api==0.12 \
       packaging==16.8 \
       #python-Levenshtein==0.12.0 \
-      voluptuous==0.13.1
+      voluptuous==0.13.1 \
+      tinytuya==1.13.1
 
 ADD ./emp_mos_api /emp_mos_api
 

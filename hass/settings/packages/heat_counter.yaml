@@ -25,5 +25,3 @@ counter:
   heat_counter:
     step: 1
     restore: true
-  test:
-    restore: true
