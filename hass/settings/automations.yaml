@@ -208,3 +208,23 @@
     entity_id: e9c511738ece30cf4b75c96023ba33ff
     domain: switch
   mode: single
+- id: '1706383112067'
+  alias: Control Washer+Dishwasher
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - switch.dishwasher
+    - switch.washer
+    from: 'on'
+    to: 'off'
+  condition: []
+  action:
+  - service: switch.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id:
+      - switch.washer
+      - switch.dishwasher
+  mode: single

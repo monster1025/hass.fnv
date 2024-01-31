@@ -34,7 +34,7 @@
         "id": "bac739064a0752d3",
         "type": "tuya-smart-device",
         "z": "32f338f62fe84201",
-        "deviceName": "Dorbell parter",
+        "deviceName": "Doorbell",
         "disableAutoStart": false,
         "deviceId": "",
         "deviceKey": "",
@@ -44,7 +44,7 @@
         "findTimeout": 10000,
         "tuyaVersion": "3.3",
         "eventMode": "event-both",
-        "x": 140,
+        "x": 120,
         "y": 80,
         "wires": [
             [
@@ -171,13 +171,13 @@
         "id": "e8ac1a2ea3533224",
         "type": "ha-fire-event",
         "z": "32f338f62fe84201",
-        "name": "doorbell",
+        "name": "Fire Event in Hass",
         "server": "9d88782117d11324",
         "version": 0,
         "event": "doorbell_call",
         "data": "{\"doorbell_pic\":payload}",
         "dataType": "jsonata",
-        "x": 1020,
+        "x": 1050,
         "y": 160,
         "wires": [
             []

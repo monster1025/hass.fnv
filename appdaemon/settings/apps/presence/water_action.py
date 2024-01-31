@@ -46,19 +46,24 @@ class WaterValveControl(hass.Hass):
     if 'constraint' in self.args and not self.constrain_input_boolean(self.args['constraint']):
       return
     powered_on = self.get_turned_on_devices()
+    self.log('away entities: {}'.format(powered_on))
     if (len(powered_on) > 0):
       device_names = ""
       for device in powered_on:
         if device_names != '':
           device_names += ", "
-        device_names += self.friendly_name(device)
+        name = self.friendly_name(device)
+        if name is None:
+          name = device
+        device_names += name
       self.notify('В доме остались требующие воды устройства ({}), подача воды не будет отключена.'.format(device_names), name = self.args['notify'])
       self.cancel_current_timer()
       self.timers.append(self.run_every(self.wait_when_device_is_done, self.datetime()+datetime.timedelta(seconds=5), 5*60))
     else:
+      self.notify('Отключаю подачу воды.', name = self.args['notify'])
       self.turn_off(self.args['water_valve'])
-      for device in self.args['water_devices']:
-        self.turn_off(device)
+      # for device in self.args['water_devices']:
+      #   self.turn_off(device)
 
   def wait_when_device_is_done(self, kwargs):
     if 'constraint' in self.args and not self.constrain_input_boolean(self.args['constraint']):
@@ -80,7 +85,10 @@ class WaterValveControl(hass.Hass):
     self.log("Turning off water devices.")
     self.turn_off(self.args['water_valve'])
     for device in self.args['water_devices']:
-      self.turn_off(device)
+      device = self.args['water_devices'][device]
+      if 'switch' in device:
+        self.log('switching off: {}'.format(device))
+        self.turn_off(device)
 
   def get_turned_on_devices(self):
     powered_on_devices = []
@@ -88,7 +96,7 @@ class WaterValveControl(hass.Hass):
     for device in devices:
       state = self.get_state(device)
       self.log('{} state: {}'.format(device, state))
-      if state == 'off':
+      if state == 'off' or state == None:
         continue
       powered_on_devices.append(device)
     return powered_on_devices

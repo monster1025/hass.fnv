@@ -20,3 +20,53 @@
 #         {% else %}
 #           {{ states('sensor.dishwasher_program_progress') + "%" }}
 #         {% endif %}
+
+mqtt:
+  sensor:
+    - name: hc_dishwasher_state
+      unique_id: hc_dishwasher_state
+      state_topic: "homeconnect/dishwasher/state"
+      value_template: "{{ value_json.state }}"
+      json_attributes_topic: "homeconnect/dishwasher/state"
+    - name: hc_dishwasher_remaining
+      unique_id: hc_dishwasher_remaining
+      state_topic: "homeconnect/dishwasher/state"
+      value_template: "{{ value_json.remaining }}"
+      json_attributes_topic: "homeconnect/dishwasher/state"
+  binary_sensor:
+    - state_topic: "homeconnect/dishwasher/state"
+      name: hc_dishwasher_door
+      unique_id: hc_dishwasher_door
+      device_class: opening
+      payload_on: "Open"
+      payload_off: "Closed"
+      value_template: "{{ value_json.door }}"
+      json_attributes_topic: "homeconnect/dishwasher/state"
+    - state_topic: "homeconnect/dishwasher/state"
+      name: hc_dishwasher_power
+      unique_id: hc_dishwasher_power
+      payload_on: true
+      payload_off: false
+      value_template: "{{ value_json.power }}"
+      json_attributes_topic: "homeconnect/dishwasher/state"
+template:
+  binary_sensor:
+    - name: hc_dishwasher_running
+      unique_id: hc_dishwasher_running
+      state: "{{ is_state('sensor.hc_dishwasher_state', 'Run') }}"
+
+homeassistant:
+  customize:
+    sensor.hc_dishwasher_state:
+      friendly_name: Посудомойка Статус
+    binary_sensor.hc_dishwasher_door:
+      friendly_name: Посудомойка Дверца
+    binary_sensor.hc_dishwasher_remaining:
+      friendly_name: Посудомойка До конца программы
+    sensor.hc_dishwasher_running:
+      friendly_name: Посудомоечная машина
+    binary_sensor.hc_dishwasher_power:
+      friendly_name: Посудомойка Питание
+
+
+# homeconnect/dishwasher/state {"state": "Ready", "door": "Closed", "remaining": "0:15", "power": false, "lowwaterpressure": false, "aquastop": false, "error": false, "remainingseconds": 900}

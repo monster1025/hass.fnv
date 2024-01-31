@@ -17,6 +17,10 @@ QUERY_TIME = os.getenv('QUERY_TIME', 60)
 PREFIX = os.getenv('PREFIX', 'home/watercontrol')
 NEPTUN_IP = os.getenv('NEPTUN_IP', '192.168.1.147')
 NEPTUN_ID = os.getenv('NEPTUN_ID', 240)
+COUNTERS_SLOT = 3
+
+###############################################################
+slot_config = {1: [107, 109], 2:[111, 113], 3:[115, 117], 4:[119, 121]}
 
 def prepare_mqtt():
 	print("Connecting to MQTT server", MQTT_SERVER, ":", MQTT_PORT, "with username", MQTT_USER,":",MQTT_PASS)
@@ -82,17 +86,28 @@ def refresh_loop(client):
 			value = "ON"
 		client.publish(PREFIX + "/valves", payload=value, qos=0, retain=True)
 
-		response = modbus.read_holding_registers(address=119, count=2, slave=NEPTUN_ID)
+		reg_config = slot_config[COUNTERS_SLOT]
+		reg_cold = reg_config[0]
+		reg_hot = reg_config[1]
+
+		response = modbus.read_holding_registers(reg_cold, count=2, slave=NEPTUN_ID)
 		decoder = BinaryPayloadDecoder.fromRegisters(response.registers, byteorder=Endian.Big, wordorder=Endian.Big)
 		value = decoder.decode_32bit_uint()/1000
 		print("counter_cold: {}".format(value))
-		client.publish(PREFIX + "/counter3_1", payload=value, qos=0, retain=True)
+		client.publish("{}/counter{}_1".format(PREFIX, COUNTERS_SLOT), payload=value, qos=0, retain=True)
 
-		response = modbus.read_holding_registers(address=121, count=2, slave=NEPTUN_ID)
+		response = modbus.read_holding_registers(reg_hot, count=2, slave=NEPTUN_ID)
 		decoder = BinaryPayloadDecoder.fromRegisters(response.registers, byteorder=Endian.Big, wordorder=Endian.Big)
 		value = decoder.decode_32bit_uint()/1000
 		print("counter_hot: {}".format(value))
-		client.publish(PREFIX + "/counter3_2", payload=value, qos=0, retain=True)
+		client.publish("{}/counter{}_2".format(PREFIX, COUNTERS_SLOT), payload=value, qos=0, retain=True)
+
+		alert_status_response = modbus.read_holding_registers(address=3, count=1, slave=NEPTUN_ID)
+		decoder = BinaryPayloadDecoder.fromRegisters(alert_status_response.registers, byteorder=Endian.Big, wordorder=Endian.Big)
+		bits = decoder.decode_bits()
+		for i in range(1,5):
+			print("alert_{}: {}".format(i, bits[i]))
+			client.publish("{}/alert_{}".format(PREFIX, i), payload=bits[i-1], qos=0, retain=True)
 
 		modbus.close()
 		time.sleep(QUERY_TIME)

@@ -186,12 +186,13 @@ class EpdBalanceSensor(Automation):
         self.log('Current epd balance: {}'.format(epd_balance))
 
         entity_id = self.entity_ids['epd_balance']
+        friendly_name = self.args.get('friendly_name', 'Баланс (ЕПД)')
         attributes = {
             'unit_of_measurement': '₽',
             'icon': 'mdi:bank-transfer',
             'date': datetime.now().strftime('%d.%m.%Y'),
             'unpaid': epd_description,
-            'friendly_name': 'Баланс (ЕПД)',
+            'friendly_name': friendly_name,
             'description': 'Created and updated from appdaemon ({})'.format(__name__)
         }
         self.set_state(entity_id, state = epd_balance, attributes = attributes)
@@ -348,11 +349,13 @@ class MosruEpd(MosruBase):
       self.log('epd not found for date: {}'.format(date_str))
       return
     for epd in epds:
+      if epd['epd_type'] == 'DEBT':
+        continue
       date_str = epd['period']
       data[date_str] = epd
-      # epd_total = epd_first['amount']
-      # epd_is_paid = epd_first['is_paid']
-      # self.log(" - Дата: {}, сумма: {}, оплачен: {}.".format(date_str, epd_total, epd_is_paid))
+      # epd_total = epd['amount']
+      # epd_is_paid = epd['is_paid']
+      # self.log(" - Дата: {}, данные: {}.".format(date_str, epd))
     self._epd_data = data
 
 class MosruClient(MosruEpd, MosruWater, MosruPower):

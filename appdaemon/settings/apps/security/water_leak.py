@@ -52,7 +52,6 @@ class WaterLeak(hass.Hass):
     self.turn_off(self.args['valve'])
     ## to ensure that water is closed. It is important!!!
     self.call_service("mqtt/publish", topic = 'home/watercontrol/bath/valve/set', payload = 'close')
-    self.call_service("xiaomi_aqara/play_ringtone", gw_mac=self.gw_mac, ringtone_id=self.ringtone, ringtone_vol=100)
 
     message = "ВНИМАНИЕ! В ваше отстутствие сработал датчик протечки воды ({})!!! Выключаю подачу воды.".format(self.friendly_name(entity_id))
     self.notify(message, name = self.args['notify'])

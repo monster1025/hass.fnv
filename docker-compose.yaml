@@ -91,6 +91,7 @@ services:
       - "1880:1880"
     depends_on:
      - hass
+    restart: always
     volumes:
       - ./node-red/settings/data:/data
 
@@ -176,6 +177,24 @@ services:
         - "8081:80"
     #entrypoint: certbot
     #command: certonly --standalone --agree-tos --non-interactive --email admin@yandex5.ru -d home-fnv.yandex5.ru
+    logging:
+      driver: json-file
+      options:
+          max-size: "10m"
+          max-file: "5"
+
+  homeconnect2mqtt:
+    build:
+      context: ./homeconnect2mqtt/docker
+      dockerfile: Dockerfile
+    restart: always
+    container_name: homeconnect2mqtt
+    environment:
+        - HC_MQTT_HOST=192.168.1.6
+        - HC_MQTT_USER=hass
+        - HC_MQTT_PASSWORD=mqttpass
+    volumes:
+        - ./homeconnect2mqtt/settings/config.json:/app/config.json:ro
     logging:
       driver: json-file
       options:

@@ -22,7 +22,7 @@ class Teeth(hass.Hass):
   listen_event_handle_list = []
 
   def initialize(self):
-    time = datetime.time(10, 0, 0)
+    time = datetime.time(10, 0, 0)#+timedelta(hours=3)
     self.run_daily(self.reset_action, time)
     self.timer = self.run_every(self.remind_if_needed, self.datetime()+timedelta(seconds=1), self.args['remind_interval'])
     self.listen_event_handle_list.append(self.listen_state(self.button_state_change, self.args['mute_button'])) #, attribute='action'
@@ -67,7 +67,7 @@ class Teeth(hass.Hass):
     notify = "telegram"
     if "notify" in self.args:
       notify = self.args["notify"]
-    now = datetime.datetime.now()
+    now = datetime.datetime.now()+timedelta(hours=3)
     message="Уже {}, а ты еще не почистил зубы. Самое время =)".format(now.strftime("%H:%M"))
     self.notify(message, name = notify)
 

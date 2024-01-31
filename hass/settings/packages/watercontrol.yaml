@@ -27,30 +27,18 @@ mqtt:
       optimistic: false
       retain: false
 
-switch:
-  - platform: template
-    switches:
-      dryer_running:
-        value_template: "{{ is_state('sensor.sushilnaia_mash_dryer_machine_state', 'run') }}"
-        turn_on:
-          service: switch.turn_on
-          target:
-            entity_id: switch.skylight_open
-        turn_off:
-          service: switch.turn_off
-          target:
-            entity_id: switch.skylight_close
-      washer_running:
-        value_template: "{{ is_state('sensor.stiralnaia_mashina_washer_job_state', 'none') }}"
-        turn_on:
-          service: switch.turn_on
-          target:
-            entity_id: switch.skylight_open
-        turn_off:
-          service: switch.turn_off
-          target:
-            entity_id: switch.skylight_close
+template:
+  binary_sensor:
+    - name: dryer_running
+      state: "{{ not is_state('sensor.sushilnaia_mash_dryer_job_state', 'none') }}"
+    - name: washer_running
+      state: "{{ not is_state('sensor.stiralnaia_mashina_washer_job_state', 'none') }}"
+
 homeassistant:
   customize:
     switch.water_valve:
       friendly_name: Подача воды
+    binary_sensor.dryer_running:
+      friendly_name: "Сушильная машина"      
+    binary_sensor.washer_running:
+      friendly_name: "Стиральная машина"

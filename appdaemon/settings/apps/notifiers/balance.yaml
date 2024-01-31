@@ -38,6 +38,7 @@ balance_low_report_fonvizina:
     fonvizina_epd_balance: sensor.fonvizina_epd_balance
     fonvizina_trash_balance: sensor.fonvizina_trash_balance
     fonvizina_kladovka_balance: sensor.fonvizina_kladovka_balance
+    fonvizina_epd_mosru_balance: sensor.epd_balance_mosru_fonvizina
   always_send: 0
   threshold: -100
   inverted: true

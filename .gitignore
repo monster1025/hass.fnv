@@ -27,3 +27,4 @@ node-red/settings/data/package-lock.json
 node-red/settings/data/package.json
 node-red/settings/data/.config.nodes.json
 node-red/settings/data/.config.runtime.json
+homeconnect2mqtt/settings/config.json

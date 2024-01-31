@@ -1,0 +1,112 @@
+#!/usr/bin/env python3
+# Contact Bosh-Siemens Home Connect devices
+# and connect their messages to the mqtt server
+import json
+import sys
+import time
+from threading import Thread
+
+import click
+import paho.mqtt.client as mqtt
+
+from HCDevice import HCDevice
+from HCSocket import HCSocket, now
+
+
+@click.command()
+@click.argument("config_file")
+@click.option("-h", "--mqtt_host", default="localhost")
+@click.option("-p", "--mqtt_prefix", default="homeconnect/")
+@click.option("-u", "--mqtt_user", default="")
+@click.option("-pw", "--mqtt_password", default="")
+def hc2mqtt(config_file: str, mqtt_host: str, mqtt_prefix: str, mqtt_user: str, mqtt_password: str):
+	click.echo(f"Hello {config_file=} {mqtt_host=} {mqtt_prefix=} {mqtt_user=}")
+
+	with open(config_file, "r") as f:
+		devices = json.load(f)
+
+	client = mqtt.Client()
+	if mqtt_user != "" and mqtt_password != "":
+		client.username_pw_set(mqtt_user, mqtt_password)
+	client.connect(host=mqtt_host, port=1883, keepalive=70)
+
+	for device in devices:
+		mqtt_topic = mqtt_prefix + device["name"]
+		thread = Thread(target=client_connect, args=(client, device, mqtt_topic))
+		thread.start()
+
+	client.loop_forever()
+
+
+# Map their value names to easier state names
+topics = {
+	"OperationState": "state",
+	"DoorState": "door",
+	"RemainingProgramTime": "remaining",
+	"PowerState": "power",
+	"LowWaterPressure": "lowwaterpressure",
+	"AquaStopOccured": "aquastop",
+	"InternalError": "error",
+	"FatalErrorOccured": "error",
+	"MachineCareReminder": "machinecarereminder",
+	"ActiveProgram": "activeprogram" #8215 - machine care
+}
+
+
+
+def client_connect(client, device, mqtt_topic):
+	host = device["host"]
+
+	state = {}
+	for topic in topics:
+		state[topics[topic]] = None
+
+	while True:
+		try:
+			ws = HCSocket(host, device["key"], device.get("iv",None))
+			dev = HCDevice(ws, device.get("features", None))
+
+			ws.debug = True
+			ws.reconnect()
+
+			while True:
+				msg = dev.recv()
+				if msg is None:
+					break
+				if len(msg) > 0:
+					print(now(), msg)
+
+				update = False
+				for topic in topics:
+					value = msg.get(topic, None)
+					if value is None:
+						continue
+
+					# Convert "On" to True, "Off" to False
+					if value == "On":
+						value = True
+					elif value == "Off":
+						value = False
+
+					new_topic = topics[topic]
+					if new_topic == "remaining":
+						state["remainingseconds"] = value
+						value = "%d:%02d" % (value / 60 / 60, (value / 60) % 60)
+
+					state[new_topic] = value
+					update = True
+
+				if not update:
+					continue
+
+				msg = json.dumps(state)
+				print("publish", mqtt_topic, msg)
+				client.publish(mqtt_topic + "/state", msg, retain=True)
+
+		except Exception as e:
+			print("ERROR", host, e, file=sys.stderr)
+
+		time.sleep(5)
+
+if __name__ == "__main__":
+	hc2mqtt(auto_envvar_prefix='HC')

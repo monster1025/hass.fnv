@@ -8,6 +8,7 @@ water_action:
   notify: telegram
   constraint: input_boolean.water_control
   water_devices:
-    - switch.stiralnaia_mashina # стиралка
+    - binary_sensor.washer_running # стиралка
+    - binary_sensor.hc_dishwasher_running # посудомойка
   global_dependencies:
     - globals

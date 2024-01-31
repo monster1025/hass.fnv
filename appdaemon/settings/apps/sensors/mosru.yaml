@@ -18,6 +18,7 @@ mosru_client:
 epd_sensor:
   class: EpdBalanceSensor
   module: mosru
+  friendly_name: Баланс (ЕПД) Алтуфьево
   entity_ids:
     epd_balance: sensor.epd_balance
   app: mosru_client
@@ -93,6 +94,7 @@ mosru_client_belorechenskaya:
 epd_sensor_belorechenskaya:
   class: EpdBalanceSensor
   module: mosru
+  friendly_name: Баланс (ЕПД) Белореченская
   entity_ids:
     epd_balance: sensor.epd_balance_belorechenskaya
   app: mosru_client_belorechenskaya
@@ -123,5 +125,30 @@ water_sensor_belorechenskaya:
   app: mosru_client_belorechenskaya
   dependencies:
     - mosru_client_belorechenskaya
+  global_dependencies:
+    - globals
+#---------------------------------------------------------
+mosru_client_fonvizina:
+  class: MosruClient
+  module: mosru
+  properties:
+    login: !secret mosru_login
+    pwd: !secret mosru_pwd
+    token: !secret mosru_token
+    paycode: !secret mosru_fonvizina_paycode
+    flat_id: !secret mosru_fonvizina_flat_id
+    session_id: !secret mosru_session
+  global_dependencies:
+    - globals
+
+epd_sensor_mosru_fonvizina:
+  class: EpdBalanceSensor
+  module: mosru
+  friendly_name: Баланс (ЕПД) Фонвизина
+  entity_ids:
+    epd_balance: sensor.epd_balance_mosru_fonvizina
+  app: mosru_client_fonvizina
+  dependencies:
+    - mosru_client_fonvizina
   global_dependencies:
     - globals

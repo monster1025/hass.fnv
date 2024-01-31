@@ -1,0 +1,9 @@
+bs4
+requests
+pycryptodome
+websocket-client
+sslpsk
+paho.mqtt
+lxml
+click
+requests
