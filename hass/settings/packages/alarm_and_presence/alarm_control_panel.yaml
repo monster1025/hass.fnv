@@ -1,6 +1,7 @@
 alarm_control_panel:
   - platform: manual
     name: ha_alarm
+    code_arm_required: false
     delay_time: 5
     trigger_time: 5
     arming_time: 5

@@ -228,3 +228,33 @@
       - switch.washer
       - switch.dishwasher
   mode: single
+- id: '1722417271264'
+  alias: Bath ventilation timer
+  description: ''
+  trigger:
+  - entity_id: fan.ventilation_bath
+    for:
+      minutes: 15
+    platform: state
+    to: 'on'
+  condition: []
+  action:
+  - data: {}
+    entity_id: fan.ventilation_bath
+    service: homeassistant.turn_off
+  mode: single
+- id: '1722417292820'
+  alias: Shower ventilation timer
+  description: ''
+  trigger:
+  - entity_id: fan.ventilation_shower
+    for:
+      minutes: 15
+    platform: state
+    to: 'on'
+  condition: []
+  action:
+  - data: {}
+    entity_id: fan.ventilation_shower
+    service: homeassistant.turn_off
+  mode: single

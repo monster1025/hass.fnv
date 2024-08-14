@@ -12,3 +12,10 @@ tag_svetlana_iphone:
   icon:
   picture:
   track: true
+
+tag_mama_iphone:
+  name: tag_mama_iphone
+  mac:
+  icon:
+  picture:
+  track: true

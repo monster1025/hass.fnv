@@ -62,12 +62,7 @@ entities_action:
     - media_player.yandex_station_ly00000000000008674600007209d3f5
     - media_player.yandex_station_ff98f029ab48468d28c557be
     - media_player.yandex_station_u003jc100phn9k
-
-    # yolka
-    - light.plug_yolka
   return_entities:
-    # yolka
-    - light.plug_yolka
     - light.light_kitchen_set
 
   thremostats:

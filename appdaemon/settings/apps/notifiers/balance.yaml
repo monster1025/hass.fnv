@@ -45,3 +45,17 @@ balance_low_report_fonvizina:
   notify: telegram
   global_dependencies:
     - globals
+
+balance_low_report_milashenkova:
+  class: Balance
+  module: balance
+  constraint: input_boolean.balance_report
+  name: Милашенкова
+  entity_ids:
+    mosenergosbyt_balance: sensor.power_mosenergosbyt_milashenkova_balance
+    epd_balance: sensor.epd_balance_milashenkova
+  always_send: 0
+  threshold: -100
+  notify: telegram
+  global_dependencies:
+    - globals

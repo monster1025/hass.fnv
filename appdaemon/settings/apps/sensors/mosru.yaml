@@ -152,3 +152,54 @@ epd_sensor_mosru_fonvizina:
     - mosru_client_fonvizina
   global_dependencies:
     - globals
+
+#---------------------------------------------------------
+mosru_client_milashenkova:
+  class: MosruClient
+  module: mosru
+  properties:
+    login: !secret mosru_login
+    pwd: !secret mosru_pwd
+    token: !secret mosru_token
+    paycode: !secret mosru_milashenkova_paycode
+    flat_id: !secret mosru_milashenkova_flat_id
+    session_id: !secret mosru_session
+  global_dependencies:
+    - globals
+
+epd_sensor_milashenkova:
+  class: EpdBalanceSensor
+  module: mosru
+  friendly_name: Баланс (ЕПД) Милашенкова
+  entity_ids:
+    epd_balance: sensor.epd_balance_milashenkova
+  app: mosru_client_milashenkova
+  dependencies:
+    - mosru_client_milashenkova
+  global_dependencies:
+    - globals
+
+power_sensor_milashenkova:
+  class: PowerCounterSensor
+  module: mosru
+  entity_ids:
+    power_balance: sensor.power_mosenergosbyt_milashenkova_balance
+    power_total: sensor.power_mosenergosbyt_milashenkova_total
+  app: mosru_client_milashenkova
+  dependencies:
+    - mosru_client_milashenkova
+  global_dependencies:
+    - globals
+
+water_sensor_milashenkova:
+  class: WaterCounterSensor
+  module: mosru
+  entity_ids:
+    hot: sensor.counter_mosru_milashenkova_hot
+    cold: sensor.counter_mosru_milashenkova_cold
+  app: mosru_client_milashenkova
+  dependencies:
+    - mosru_client_milashenkova
+  global_dependencies:
+    - globals
+#---------------------------------------------------------

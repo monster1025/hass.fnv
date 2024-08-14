@@ -6,16 +6,21 @@ cover_action:
   class: CoverByPresence
   sunrise_offset: 0
   sunset_offset: 0
+  guest_mode: input_boolean.guest_mode
   covers:
     - cover.curtain_bedroom
     - cover.curtain_bedroom_balcony
+    #- cover.curtain_bedroom_bobbinet_balcony
     - cover.curtain_kitchen
     - cover.curtain_mainroom
+    #- cover.curtain_mainroom_bobbinet
   close_at_sunset:
     - cover.curtain_bedroom
     - cover.curtain_bedroom_balcony
+    - cover.curtain_bedroom_bobbinet_balcony
     - cover.curtain_kitchen
     - cover.curtain_mainroom
+    - cover.curtain_mainroom_bobbinet
   open_at_sunrise:
     - cover.curtain_kitchen
     - cover.curtain_mainroom

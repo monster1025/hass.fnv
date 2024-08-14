@@ -55,6 +55,10 @@ template:
       unique_id: hc_dishwasher_running
       state: "{{ is_state('sensor.hc_dishwasher_state', 'Run') }}"
 
+counter:
+  dishwasher_door_open_count:
+    name: dishwasher_door_open_count
+
 homeassistant:
   customize:
     sensor.hc_dishwasher_state:

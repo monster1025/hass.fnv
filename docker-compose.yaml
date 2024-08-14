@@ -32,7 +32,8 @@ services:
         max-size: 50m 
 
   hass:
-    image: ghcr.io/home-assistant/home-assistant:stable
+    image: "homeassistant/home-assistant:stable"
+    #image: ghcr.io/home-assistant/home-assistant:stable
     container_name: hass
     volumes:
       - ./hass/settings:/config
@@ -113,7 +114,7 @@ services:
           max-file: "5"
 
   zigbee2mqtt:
-    image: koenkk/zigbee2mqtt:latest-dev
+    image: koenkk/zigbee2mqtt:latest
     container_name: zigbee2mqtt
     ports:
       - "8080:8080"

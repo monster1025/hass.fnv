@@ -33,7 +33,6 @@ yandex_smart_home:
       - light.light_shower_main_spotlights
       - light.light_shower_shelf_light
       - light.light_shower_shower_spotlights
-      - light.plug_yolka
       - light.svetlana_bedside_lamp_rgbww_light
       - media_player.bedroom_tv
       - media_player.kitchen_tv

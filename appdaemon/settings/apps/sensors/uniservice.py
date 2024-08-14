@@ -24,13 +24,18 @@ class EpdBalanceSensor(hass.Hass):
     self.log(sys.stdout.encoding)
     self.log('привет мир')
 
+  def to_balance(self, value_str):
+    value_str = value_str.replace(" ", "").replace(",", ".").replace("₽", "")
+    return -1 * float(value_str)
+
   def update_sensors(self, args) -> None:
     entity_ids = self.args.get('entity_ids',[])
     session = self.get_auth_session(self.login, self.pwd)
     payment_amounts = self.get_payment_amounts(session, self.accounts)
     self.log(payment_amounts)
 
-    fonvizina_epd_balance = payment_amounts[0]['service_to_pay']
+
+    fonvizina_epd_balance = self.to_balance(payment_amounts[0]['service_to_pay'])
     if 'fonvizina_epd_balance' in entity_ids:
       entity_id = entity_ids['fonvizina_epd_balance']
       attributes = {
@@ -43,7 +48,7 @@ class EpdBalanceSensor(hass.Hass):
       }
       self.set_state(entity_id, state = fonvizina_epd_balance, attributes = attributes)
 
-    fonvizina_trash_balance = payment_amounts[0]['trash_to_pay']
+    fonvizina_trash_balance = self.to_balance(payment_amounts[0]['trash_to_pay'])
     if 'fonvizina_trash_balance' in entity_ids:
       entity_id = entity_ids['fonvizina_trash_balance']
       attributes = {
@@ -56,7 +61,7 @@ class EpdBalanceSensor(hass.Hass):
       }
       self.set_state(entity_id, state = fonvizina_trash_balance, attributes = attributes)
 
-    fonvizina_kladovka_balance = payment_amounts[1]['service_to_pay']
+    fonvizina_kladovka_balance = self.to_balance(payment_amounts[1]['service_to_pay'])
     if 'fonvizina_kladovka_balance' in entity_ids:
       entity_id = entity_ids['fonvizina_kladovka_balance']
       attributes = {
@@ -101,8 +106,9 @@ class EpdBalanceSensor(hass.Hass):
 
           trash_to_pay = '0'
           trash_to_pay_item = doc.find('div', string="Обращение с ТКО, к оплате:")
+          self.log(trash_to_pay_item)
           if not trash_to_pay_item is None:
-              trash_to_pay = trash_to_pay_item.parent.find_all('div')[1].text.replace(' Р.', '')
+              trash_to_pay = trash_to_pay_item.parent.find_all('div')[3].text.replace(' Р.', '')
           result['trash_to_pay'] = trash_to_pay
           results.append(result)
       return results

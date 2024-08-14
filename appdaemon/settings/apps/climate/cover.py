@@ -28,6 +28,15 @@ class CoverByPresence(hass.Hass):
     if 'constraint' in self.args and not self.constrain_input_boolean(self.args['constraint']):
       self.log('execution is disabled.')
       return
+
+    if 'guest_mode' in self.args and self.constrain_input_boolean(self.args['guest_mode']):
+      self.log('guest mode, no run at sunrise.')
+      return
+
+    if 'open_at_sunrise' not in self.args:
+      self.log('no covers to open at sunrise.')
+      return
+
     for entity_id in self.args["open_at_sunrise"]:
       self.log('opening cover {} at sunrise'.format(entity_id))
       self.turn_on_custom(entity_id)
@@ -35,6 +44,9 @@ class CoverByPresence(hass.Hass):
   def run_at_sunset_func(self, kwargs):
     if 'constraint' in self.args and not self.constrain_input_boolean(self.args['constraint']):
       self.log('execution is disabled.')
+      return
+    if 'close_at_sunset' not in self.args:
+      self.log('no covers to close at sunset.')
       return
     for entity_id in self.args["close_at_sunset"]:
       self.log('closing cover {} at sunset'.format(entity_id))

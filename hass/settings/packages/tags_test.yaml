@@ -1,17 +1,25 @@
 sensor:
   - platform: mqtt_room
-    device_id: "iphone_danil"
+    device_id: "irk:75f45ca5a0b55b563f827339c91da5be"
     name: 'tag_danil_iphone'
-    state_topic: 'espresense/devices/iphone_danil'
+    state_topic: 'espresense/devices/irk:75f45ca5a0b55b563f827339c91da5be'
     timeout: 30
     away_timeout: 300
 
   - platform: mqtt_room
-    device_id: "iphone_svetlana"
+    device_id: "irk:0ef156b2a4ea9ffa8966c686b4b613a6"
     name: 'tag_svetlana_iphone'
-    state_topic: 'espresense/devices/iphone_svetlana'
+    state_topic: 'espresense/devices/irk:0ef156b2a4ea9ffa8966c686b4b613a6'
     timeout: 30
     away_timeout: 300
+
+  - platform: mqtt_room
+    device_id: "irk:2b74e71a6127b593d555f71f1a253f81"
+    name: 'tag_mama_iphone'
+    state_topic: 'espresense/devices/irk:2b74e71a6127b593d555f71f1a253f81'
+    timeout: 30
+    away_timeout: 300
+
 
 homeassistant:
   customize:
@@ -19,6 +27,8 @@ homeassistant:
       friendly_name: Данил (телефон)
     sensor.tag_svetlana_iphone:
       friendly_name: Света (телефон)
+    sensor.tag_mama_iphone:
+      friendly_name: Мама (телефон)
 
 automation:
   alias: "Presence: Beacons"
@@ -28,6 +38,7 @@ automation:
       entity_id:
         - sensor.tag_danil_iphone
         - sensor.tag_svetlana_iphone
+        - sensor.tag_mama_iphone
       enabled: true
   condition: []
   action:
@@ -35,7 +46,7 @@ automation:
       data:
         dev_id: "{{ trigger.entity_id.split('.')[1] }}"
         location_name: |
-          {% set locations = ['mainroom'] %}
+          {% set locations = ['mainroom', 'kitchen'] %}
           {% if trigger.to_state.state in locations  %}
             home
           {% elif trigger.to_state.state not in locations %}

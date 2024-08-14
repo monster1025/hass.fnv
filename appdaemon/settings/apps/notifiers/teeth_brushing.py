@@ -32,6 +32,11 @@ class Teeth(hass.Hass):
     if attribute == 'state' and new == 'single':
       self.log('Muting notifications')
       self.muted = True
+      self.say("Принято")
+
+  def say(self, command):
+    self.log('command = {}'.format(command))
+    self.call_service('media_player/play_media', entity_id=self.args['alice'], media_content_type='text', media_content_id=command)
 
   def reset_action(self, kwargs):
     self.log('Resetting mute state')
