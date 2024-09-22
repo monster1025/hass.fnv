@@ -32,6 +32,9 @@ input_boolean:
     icon: mdi:lock-alert
 
 ############################# Автоматизации AppDaemon #############################
+  kitchenset_light_control:
+    name: Контроль подсветки гарнитура
+
   bath_light_control:
     name: Контроль света в ванной
 

@@ -4,15 +4,19 @@
 mqtt:
   sensor:
     - unique_id: counter_cold
-      state_topic: 'home/watercontrol/counter3_1'
+      state_topic: 'home/watercontrol/counter2_1'
       name: 'counter_cold'
       value_template: '{{ (value | float ) }}'
-      unit_of_measurement: 'm3'
+      unit_of_measurement: 'm³'
+      device_class: water
+      state_class: total_increasing
     - unique_id: counter_hot
-      state_topic: 'home/watercontrol/counter3_2'
+      state_topic: 'home/watercontrol/counter2_2'
       name: 'counter_hot'
       value_template: '{{ (value | float ) }}'
-      unit_of_measurement: 'm3'
+      unit_of_measurement: 'm³'
+      device_class: water
+      state_class: total_increasing
     - unique_id: uptime_watercontrol
       state_topic: 'home/watercontrol/$uptime'
       name: 'uptime_watercontrol'
@@ -28,6 +32,18 @@ mqtt:
       retain: false
 
 template:
+  sensor:
+    - name: counter_hot_outer
+      device_class: water
+      state_class: total_increasing
+      unit_of_measurement: 'm³'
+      state: "{{ states('sensor.counter_hot') | float + 88.97 | round(2) }}"
+    - name: counter_cold_outer
+      device_class: water
+      state_class: total_increasing
+      unit_of_measurement: 'm³'
+      state: "{{ states('sensor.counter_cold') | float + 144.7 | round(2) }}"
+
   binary_sensor:
     - name: dryer_running
       state: "{{ not is_state('sensor.sushilnaia_mash_dryer_job_state', 'none') }}"
@@ -42,3 +58,8 @@ homeassistant:
       friendly_name: "Сушильная машина"      
     binary_sensor.washer_running:
       friendly_name: "Стиральная машина"
+
+    sensor.counter_hot_outer:
+      friendly_name: "Счетчик Внешний Горячая"      
+    sensor.counter_cold_outer:
+      friendly_name: "Счетчик Внешний Холодная"      

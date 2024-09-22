@@ -17,7 +17,7 @@ QUERY_TIME = os.getenv('QUERY_TIME', 60)
 PREFIX = os.getenv('PREFIX', 'home/watercontrol')
 NEPTUN_IP = os.getenv('NEPTUN_IP', '192.168.1.147')
 NEPTUN_ID = os.getenv('NEPTUN_ID', 240)
-COUNTERS_SLOT = int(os.getenv('NEPTUN_WATER_COUNTERS_SLOT', 3))
+COUNTERS_SLOT = int(os.getenv('NEPTUN_WATER_COUNTERS_SLOT', 2))
 
 ###############################################################
 slot_config = {1: [107, 109], 2:[111, 113], 3:[115, 117], 4:[119, 121]}
@@ -112,7 +112,7 @@ def refresh_loop(client):
 
 			modbus.close()
 		except Exception as e:
-			print("ERROR", host, e, file=sys.stderr)
+			print("ERROR", NEPTUN_IP, e, file=sys.stderr)
 		time.sleep(QUERY_TIME)
 
 if __name__ == "__main__":

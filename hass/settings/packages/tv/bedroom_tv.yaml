@@ -1,6 +1,6 @@
 rest_command:
   bedroom_tv_wol:
-    url: "http://192.168.1.1/wol_action.asp?dstmac=74:E6:B8:78:7E:FB"
+    url: "http://192.168.1.1/wol_action.asp?dstmac=C0:D7:AA:AA:1B:12"
     method: get
     content_type: "application/json"
     username: !secret router_username

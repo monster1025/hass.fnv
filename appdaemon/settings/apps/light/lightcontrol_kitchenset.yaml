@@ -1,0 +1,18 @@
+#################################
+#          LIGHT CONTROL        #
+#################################
+light_control_kitchenset:
+  module: lightcontrol_kitchenset
+  class: LightControlKitchenset
+  constraint: input_boolean.kitchenset_light_control
+  sensors: 
+    - binary_sensor.motion_kitchenset_left_occupancy
+    - binary_sensor.motion_kitchenset_right_occupancy
+  night_sensors:
+    - binary_sensor.motion_hall_1_occupancy
+    - binary_sensor.motion_hall_2_occupancy
+  control_entity: switch.light_kitchen_set
+  timeout: 900 #1200 - 20 mins
+  night_timeout: 300 #300 - 5 min
+  global_dependencies:
+    - globals

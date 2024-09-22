@@ -63,7 +63,7 @@ entities_action:
     - media_player.yandex_station_ff98f029ab48468d28c557be
     - media_player.yandex_station_u003jc100phn9k
   return_entities:
-    - light.light_kitchen_set
+    # - light.light_kitchen_set
 
   thremostats:
     - climate.radiator_childroom

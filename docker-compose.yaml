@@ -85,7 +85,7 @@ services:
   node-red:
     build:
       context: ./node-red/docker
-    image: nodered/node-red:latest
+    #image: nodered/node-red:latest
     environment:
       - TZ=Europe/Moscow
     ports:

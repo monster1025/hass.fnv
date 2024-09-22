@@ -28,54 +28,6 @@
     data:
       message: Звонок в дверь!
   mode: single
-- id: '1676583026190'
-  alias: Test_Light_By_Presense
-  description: ''
-  trigger:
-  - platform: state
-    entity_id:
-    - binary_sensor.presense_test_presence
-    for:
-      hours: 0
-      minutes: 0
-      seconds: 0
-  condition: []
-  action:
-  - service: switch.turn_on
-    data: {}
-    target:
-      entity_id: switch.light_2_l5
-  - service: switch.turn_off
-    data: {}
-    target:
-      entity_id: switch.light_2_l5
-  mode: single
-- id: '1688062326447'
-  alias: TurnOnWaterHeater
-  description: ''
-  trigger:
-  - platform: time
-    at: '23:00:00'
-  condition: []
-  action:
-  - type: turn_on
-    device_id: 47f466e2197ca1b56ea93ba2f3473098
-    entity_id: switch.plug_water_heater
-    domain: switch
-  mode: single
-- id: '1688062367698'
-  alias: TurnOffWaterHeater
-  description: ''
-  trigger:
-  - platform: time
-    at: 07:00:00
-  condition: []
-  action:
-  - type: turn_off
-    device_id: 47f466e2197ca1b56ea93ba2f3473098
-    entity_id: switch.plug_water_heater
-    domain: switch
-  mode: single
 - id: '1694942205257'
   alias: Unavailable entity detection & notification
   description: ''
