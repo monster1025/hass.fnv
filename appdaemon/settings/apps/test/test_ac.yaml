@@ -1,0 +1,5 @@
+test_ac:
+ module: test_ac
+ class: TestAc
+ dependencies:
+  - notify

@@ -2,6 +2,8 @@ yandex_smart_home:
   filter:
     include_domains:
       - cover
+      - fan
+      - vacuum
     include_entities:
       - climate.radiator_bedroom
       - climate.radiator_bedroom_balcony

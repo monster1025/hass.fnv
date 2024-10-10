@@ -112,7 +112,7 @@ def refresh_loop(client):
 
 			modbus.close()
 		except Exception as e:
-			print("ERROR", NEPTUN_IP, e, file=sys.stderr)
+			print("ERROR", NEPTUN_IP, e)
 		time.sleep(QUERY_TIME)
 
 if __name__ == "__main__":

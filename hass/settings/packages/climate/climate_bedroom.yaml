@@ -1,0 +1,33 @@
+climate:
+  - platform: generic_thermostat
+    name: 
+    heater: 
+    target_sensor: 
+    min_temp: 15
+    max_temp: 30
+    cold_tolerance: 1
+    hot_tolerance: 1
+    min_cycle_duration:
+      seconds: 360
+    keep_alive:
+      minutes: 360
+    away_temp: 16
+    heat_cool_mode: true
+
+# Example configuration.yaml entry
+climate:
+  - platform: dual_smart_thermostat
+    name: bedroom_climate
+    target_sensor: sensor.temperature_bedroom_temperature
+    heater: input_boolean.bedroom_climate_heater_switch
+    cooler: input_boolean.bedroom_climate_cooler_switch
+    openings:
+      - binary_sensor.window1
+      - binary_sensor.window2
+    openings_scope: [heat, cool]
+
+input_boolean:
+  bedroom_climate_heater_switch:
+    name: Виртуальный контроллер нагрева Спальня
+  bedroom_climate_cooler_switch:
+    name: Виртуальный контроллер охлаждения Спальня

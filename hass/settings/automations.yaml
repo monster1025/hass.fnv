@@ -89,12 +89,12 @@
   - repeat:
       count: 2
       sequence:
-      - service: remote.send_command
-        target:
-          device_id: 3493f23712217b8085d5e05870b37fb4
-        data:
+      - data:
           command: power_off_2
           device: ac
+        action: remote.send_command
+        target:
+          device_id: 3493f23712217b8085d5e05870b37fb4
   mode: single
 - id: '1703092205692'
   alias: Turn on curtain light when opened
@@ -209,4 +209,40 @@
   - data: {}
     entity_id: fan.ventilation_shower
     service: homeassistant.turn_off
+  mode: single
+- id: '1728058650984'
+  alias: Childroom Turn Off Ac in the morning
+  description: ''
+  trigger:
+  - platform: time
+    at: 07:00:00
+  condition: []
+  action:
+  - repeat:
+      count: 2
+      sequence:
+      - data:
+          command: power_off_2
+          device: ac
+        action: remote.send_command
+        target:
+          device_id: d217abb5dd76093411769c4677b6b002
+  mode: single
+- id: '1728058703218'
+  alias: Childroom Turn On Ac in the evening
+  description: ''
+  trigger:
+  - platform: time
+    at: '23:00:00'
+  condition:
+  - condition: state
+    entity_id: sensor.tag_danil_iphone
+    state: mainroom
+  action:
+  - data:
+      command: power_on
+      device: ac
+    action: remote.send_command
+    target:
+      device_id: d217abb5dd76093411769c4677b6b002
   mode: single

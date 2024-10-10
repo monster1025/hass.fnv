@@ -14,6 +14,8 @@ class TRVUpdater(hass.Hass):
         for sensor in self.entities.keys():
             self.log('listen [{0}] state'.format(sensor))
             self.listen_state(self.temperature_changed, sensor, duration=10)
+            current_temperature = self.get_state(sensor)
+            self.temperature_changed(sensor, 'temperature', '20.0', current_temperature, None)
 
     def temperature_changed(self, entity, attribute, old_state, new_state, kwargs):
         self.log('[{0}] [temperature changed] : {1}, isnumeric: {2}, type: {3}'.format(entity, new_state, new_state.isnumeric(), type(new_state)))
@@ -24,8 +26,9 @@ class TRVUpdater(hass.Hass):
             self.log('[mqtt publish] topic: "{0}" value: {1}'.format(sensor_topic, sensor_payload))
             self.call_service("mqtt/publish", topic=sensor_topic, payload=sensor_payload)
 
-            self.log('[mqtt publish] topic: "{0}" value: {1}'.format(topic, new_state))
-            self.call_service("mqtt/publish", topic=topic, payload=new_state)
+            temperature_payload = '{"external_temperature_input":"' + new_state + '"}'
+            self.log('[mqtt publish] topic: "{0}" value: {1}'.format(sensor_topic, temperature_payload))
+            self.call_service("mqtt/publish", topic=sensor_topic, payload=temperature_payload)
         
         topics = self.entities[entity].get('topic_prefixes', None)
         if topics is not None:
@@ -34,6 +37,7 @@ class TRVUpdater(hass.Hass):
                 sensor_payload = '{"sensor":"external"}'
                 self.log('[mqtt publish] topic: "{0}" value: {1}'.format(sensor_topic, sensor_payload))
                 self.call_service("mqtt/publish", topic=sensor_topic, payload=sensor_payload)
-                
-                self.log('[mqtt publish] topic: "{0}" value: {1}'.format(topic, new_state))
-                self.call_service("mqtt/publish", topic=topic, payload=new_state)
+
+                temperature_payload = '{"external_temperature_input":"' + new_state + '"}'
+                self.log('[mqtt publish] topic: "{0}" value: {1}'.format(sensor_topic, temperature_payload))
+                self.call_service("mqtt/publish", topic=sensor_topic, payload=temperature_payload)
