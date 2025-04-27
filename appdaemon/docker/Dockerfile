@@ -1,8 +1,8 @@
 FROM python:3.10
 RUN apt update && apt -y install locales && locale-gen ru_RU.UTF-8
-ENV LANG ru_RU.UTF-8
-ENV LANGUAGE ru_RU:ru
-ENV LC_ALL ru_RU.UTF-8
+ENV LANG=ru_RU.UTF-8
+ENV LANGUAGE=ru_RU:ru
+ENV LC_ALL=ru_RU.UTF-8
 ENV PYTHONIOENCODING=utf-8
 
 VOLUME /conf

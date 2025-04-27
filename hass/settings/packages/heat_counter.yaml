@@ -1,27 +1,36 @@
-# соответственно 1кВт·ч/импульс и 100 л/импульс
 sensor:
   - platform: template
     sensors:
       heat_total:
         unit_of_measurement: 'gKal'
-        value_template: "{{ states('counter.heat_counter') | float + 32.4790 | round(4) }}"
-        #7072.7 - разница показаний.
+        value_template: "{{ states('sensor.saures_teploschetchik_fonvizina') | float + 32.7600 | round(4) }}"
+        #32.7600 - разница показаний.
+      heat_hourly_cost:
+        unit_of_measurement: '₽'
+        value_template: "{{ states('sensor.heat_hourly') | float * 2569 | round(2) }}"
+      heat_daily_cost:
+        unit_of_measurement: '₽'
+        value_template: "{{ states('sensor.heat_daily') | float * 2569 | round(2) }}"
+      heat_monthly_cost:
+        unit_of_measurement: '₽'
+        value_template: "{{ states('sensor.heat_monthly') | float * 2569 | round(2) }}"
 
-automation:
-  - alias: Heat counter on sensor trigger
-    description: ''
-    trigger:
-    - entity_id: binary_sensor.contact_heat_counter_contact
-      platform: state
-      from: 'off'
-      to: 'on'
-    action:
-    - data:
-        entity_id:
-        - counter.heat_counter
-      service: counter.increment
+utility_meter:
+  heat_hourly:
+    source: sensor.saures_teploschetchik_fonvizina
+    cycle: hourly
+  heat_daily:
+    source: sensor.saures_teploschetchik_fonvizina
+    cycle: daily
+  heat_monthly:
+    source: sensor.saures_teploschetchik_fonvizina
+    cycle: monthly
 
-counter:
-  heat_counter:
-    step: 1
-    restore: true
+homeassistant:
+  customize:
+    sensor.heat_hourly:
+      friendly_name: Тепло в час
+    sensor.heat_hourly:
+      friendly_name: Тепло в день
+    sensor.heat_hourly:
+      friendly_name: Тепло в месяц

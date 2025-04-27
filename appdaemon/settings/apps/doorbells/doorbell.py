@@ -40,4 +40,4 @@ class Doorbell(hass.Hass):
     if 'alices' in self.args:
       for alice in self.args['alices']:        
         self.log('command = {}'.format(command))
-        self.call_service('media_player/play_media', entity_id=alice, media_content_type='text', media_content_id=command)
+        self.call_service('media_player/play_media', entity_id=alice, media_content_type='text', media_content_id=command, extra={'volume_level': 0.8})

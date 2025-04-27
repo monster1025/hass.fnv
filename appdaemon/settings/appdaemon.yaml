@@ -27,8 +27,8 @@ appdaemon:
       client_topics:
         - home/presence/#
 
-http:
-  url: !secret ha_url
+#http:
+#  url: !secret ha_url
 admin:
 api:
 hadashboard:

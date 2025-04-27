@@ -99,8 +99,8 @@ services:
   esphome:
     image: esphome/esphome #esphome-armv7
     container_name: esphome
-    # ports:
-    #   - "6052:6052"
+    ports:
+      - "6052:6052"
     volumes:
       - ./esphome/settings:/config
       - ./secrets/hass-fnv/settings/secrets.yaml:/config/secrets.yaml:ro
@@ -114,7 +114,7 @@ services:
           max-file: "5"
 
   zigbee2mqtt:
-    image: koenkk/zigbee2mqtt:latest
+    image: koenkk/zigbee2mqtt:1.42.0  #тут отваливается замок, поэтому не latest
     container_name: zigbee2mqtt
     ports:
       - "8080:8080"

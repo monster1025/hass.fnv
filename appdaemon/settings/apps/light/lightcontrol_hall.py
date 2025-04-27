@@ -34,6 +34,10 @@ class LightControlHall(hass.Hass):
     for sensor in self.args['motion_sensors']:
       self.listen_event_handle_list.append(self.listen_state(self.motion_trigger, sensor))
 
+    for event in self.args['events']:
+      self.listen_event(self.event_trigger, event)
+    
+
   def motion_trigger(self, entity, attribute, old, new, kwargs):
     #sensor is off
     if new == 'off' and old == 'on' and self.turn_on_by_door != None:
@@ -54,6 +58,15 @@ class LightControlHall(hass.Hass):
       self.control_entity_on()
       self.turn_on_by_door = True
       self.stop_timer()
+
+  def event_trigger(self, event_name, data, kwargs):
+    if 'constraint' in self.args and not self.constrain_input_boolean(self.args['constraint']):
+      return
+    #turnin on control entity and wait while sensor will be off, than run timer.
+    self.control_entity_on()
+    self.turn_on_by_door = True
+    self.stop_timer()
+    self.run_timer()
 
   def terminate(self):
     if self.listen_event_handle_list != None:

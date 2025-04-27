@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 import os
 import sys
 import requests
@@ -23,6 +22,8 @@ class EpdBalanceSensor(hass.Hass):
     self.timer = self.run_every(self.update_sensors, self.datetime()+timedelta(seconds=1), 1*60*60)
     self.log(sys.stdout.encoding)
     self.log('привет мир')
+    self.run_daily(self.send_counters_callback, "11:00:00", constrain_days = "sun")
+    #self.send_counters_callback(None)
 
   def to_balance(self, value_str):
     value_str = value_str.replace(" ", "").replace(",", ".").replace("₽", "")
@@ -33,7 +34,6 @@ class EpdBalanceSensor(hass.Hass):
     session = self.get_auth_session(self.login, self.pwd)
     payment_amounts = self.get_payment_amounts(session, self.accounts)
     self.log(payment_amounts)
-
 
     fonvizina_epd_balance = self.to_balance(payment_amounts[0]['service_to_pay'])
     if 'fonvizina_epd_balance' in entity_ids:
@@ -74,7 +74,6 @@ class EpdBalanceSensor(hass.Hass):
       }
       self.set_state(entity_id, state = fonvizina_kladovka_balance, attributes = attributes)
 
-
   def get_auth_session(self, phone, password):
       data={
           'AUTH_FORM': 'Y',
@@ -112,3 +111,58 @@ class EpdBalanceSensor(hass.Hass):
           result['trash_to_pay'] = trash_to_pay
           results.append(result)
       return results
+
+  def send_counters_callback(self, kwargs) -> None:
+    if 'constraint' in self.args and not self.constrain_input_boolean(self.args['constraint']):
+      return
+    self.log('sending counters....')
+    session = self.get_auth_session(self.login, self.pwd)
+    self.send_counters(session)
+    return
+
+  def send_counters(self, session) -> None:
+      cookies = dict(PHPSESSID=session)
+      account = self.accounts[0]
+      url = 'https://lkcab.ru/?accountID={}'.format(account)
+      r = requests.get(url, cookies=cookies, verify=False)
+
+      url = 'https://lkcab.ru/counters/'
+      r = requests.get(url, cookies=cookies, verify=False)
+      doc = BeautifulSoup(r.content, 'html.parser')
+      bitrix_session = doc.find("input", id="sessid").get('value')
+      self.log('session: {}'.format(bitrix_session))
+
+      data = {
+        'action':'set_meters',
+        'sessid': bitrix_session,
+      }
+      needToSend = False
+      if 'heat_total' in self.args:
+        needToSend = True
+        value = self.get_state(self.args['heat_total'])
+        if value != None:
+          data['indiccur1[294174]'] = value
+
+      if 'counter_cold_outer' in self.args:
+        needToSend = True
+        value = self.get_state(self.args['counter_cold_outer'])
+        if value != None:
+          data['indiccur1[294175]'] = value
+
+      if 'counter_hot_outer' in self.args:
+        needToSend = True
+        value = self.get_state(self.args['counter_hot_outer'])
+        if value != None:
+          data['indiccur1[294173]'] = value
+
+      if needToSend:
+        self.log('sending: {}'.format(data))
+        r = requests.post("https://lkcab.ru/counters/", cookies=cookies, data=data, verify=False)
+        self.notify_tg("Показания отправлены в юнисервис. {}".format(data))
+      self.log('done.')
+
+  def notify_tg(self, msg):
+    if not 'notify' in self.args:
+      return
+    extra_data = {'parse_mode': 'html'}
+    self.notify(msg, name = self.args['notify'], data=extra_data)

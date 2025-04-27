@@ -1,8 +1,9 @@
 sensor:
+# Old phone - 75f45ca5a0b55b563f827339c91da5be
   - platform: mqtt_room
-    device_id: "irk:75f45ca5a0b55b563f827339c91da5be"
+    device_id: "irk:f8cfda8942512292fd767127fd5028c1"
     name: 'tag_danil_iphone'
-    state_topic: 'espresense/devices/irk:75f45ca5a0b55b563f827339c91da5be'
+    state_topic: 'espresense/devices/irk:f8cfda8942512292fd767127fd5028c1'
     timeout: 30
     away_timeout: 300
 

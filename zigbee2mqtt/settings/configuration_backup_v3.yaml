@@ -1,0 +1,230 @@
+homeassistant:
+  enabled: true
+frontend:
+  enabled: true
+  port: 8080
+mqtt:
+  base_topic: z2m-tcp
+  server: mqtt://192.168.1.6:1883
+  user: hass
+  password: mqttpass
+serial:
+  port: tcp://192.168.1.132:6638
+advanced:
+  log_level: info
+  channel: 11
+  pan_id: 6754
+  last_seen: ISO_8601_local
+  transmit_power: 20
+device_options: {}
+devices:
+  '0x00124b001f315241':
+    friendly_name: light_3
+  '0x00124b001d3a3a12':
+    friendly_name: light_4
+  '0xa4c138b6bab321de':
+    friendly_name: washer
+  '0xa4c138bc0d05b7bf':
+    friendly_name: light_hall_long
+  '0xa4c13809d74d5e1f':
+    friendly_name: dishwasher
+  '0x00124b001f2f63d9':
+    friendly_name: light_2
+  '0x00124b001d644d03':
+    friendly_name: light_1
+  '0x54ef4410000d6708':
+    friendly_name: brightness_bath
+  '0x54ef4410001ffbb1':
+    friendly_name: shower_light_sensor
+  '0x00158d00012d9ad7':
+    friendly_name: temperature_balcony
+  '0xa4c1388a7a97e475':
+    friendly_name: temperature_outside_bedroom
+  '0x00158d00089761d4':
+    friendly_name: temperature_bedroom
+  '0x54ef4410003138d4':
+    friendly_name: plug_water_heater
+  '0x000b3cfffefadaaa':
+    friendly_name: light_bedroom_2
+  '0x086bd7fffe0042b0':
+    friendly_name: light_bedroom_7
+  '0x00158d00035356c6':
+    friendly_name: button_test
+  '0x00158d000392b34f':
+    friendly_name: door_shower
+  '0x54ef441000673f2a':
+    friendly_name: radiator_kitchen
+  '0x54ef4410006fe989':
+    friendly_name: radiator_bedroom
+  '0x54ef4410006fe51e':
+    friendly_name: radiator_bedroom_balcony
+  '0x00158d000913e2e7':
+    friendly_name: temperature_mainroom
+  '0x00158d000944bbdf':
+    friendly_name: temperature_kitchen
+  '0xa4c1385ae827ec1c':
+    friendly_name: light_bath
+  '0x00158d00053f1e20':
+    friendly_name: curtain_mainroom
+  '0x00158d000398d9e7':
+    friendly_name: motion_bath
+  '0x00158d0003941e67':
+    friendly_name: door_bath
+  '0x00158d00079836a0':
+    friendly_name: curtain_kitchen
+  '0x000d6f0012060764':
+    friendly_name: smoke_detector_kitchen
+  '0x9035eafffe541813':
+    friendly_name: shower_mirror
+  '0x00158d0003969a5d':
+    friendly_name: door_locker_hall_left
+  '0x54ef4410001ff4ec':
+    friendly_name: brightness_hall
+  '0x00158d000398fa90':
+    friendly_name: motion_shower_center
+  '0x00158d00053f38ef':
+    friendly_name: curtain_bedroom
+  '0x00158d0002b0c46a':
+    friendly_name: curtain_bedroom_balcony
+  '0x00158d000398f9a1':
+    friendly_name: motion_hall_1
+  '0x00158d000396c997':
+    friendly_name: door_kitchen
+  '0x00158d000396981f':
+    friendly_name: door_cloakroom
+  '0x00158d0003a10728':
+    friendly_name: door_childroom
+  '0x00158d000396c880':
+    friendly_name: door_bedroom
+  '0x00158d0003f1b8ee':
+    friendly_name: motion_childroom
+  '0x00158d00091c43c7':
+    friendly_name: temperature_bath
+  '0x00158d0008e1b6bc':
+    friendly_name: water_leak_bath_bath
+  '0x00158d00072a2198':
+    friendly_name: water_leak_bath_sink
+  '0x00158d0008e019d0':
+    friendly_name: water_leak_kitchen_fridge
+  '0x9035eafffe891816':
+    friendly_name: light_bath_mirror
+  '0x000d6f00131ca650':
+    friendly_name: smoke_detector_hall
+  '0x54ef4410002c8a61':
+    friendly_name: plug_server
+  '0x00158d0003a3a0f8':
+    friendly_name: button_shower_sink
+  '0x00158d0006ca2293':
+    friendly_name: water_leak_radiator_hub
+  '0xe0798dfffebca4cc':
+    friendly_name: switch_mirror_bath_heater
+  '0x54ef4410001952e3':
+    friendly_name: plug_yolka
+  '0x00158d000398de0b':
+    friendly_name: motion_hall_2
+  '0x00158d00044bac2c':
+    friendly_name: motion_bath_2
+  '0xe0798dfffec0fba2':
+    friendly_name: switch_mirror_shower_heater
+  '0xa4c138e184df9c4b':
+    friendly_name: light_mainroom_mainlamp
+  '0xa4c1382016d75a72':
+    friendly_name: light_mainroom_spotlights
+  '0xa4c13858fba9206a':
+    friendly_name: light_mainroom_pc_spotlight
+  '0xa4c138f30d13e363':
+    friendly_name: light_balcony_spotlight
+  '0xa4c13872c98a123d':
+    friendly_name: light_bedroom_nightlight_left
+  '0xa4c138ec247343ac':
+    friendly_name: light_bedroom_spotlights
+  '0xa4c138ebc36bcef7':
+    friendly_name: light_bedroom_pc_spotlight
+  '0xa4c138665085e34c':
+    friendly_name: light_bedroom_mainlight
+  '0xa4c138c4615096df':
+    friendly_name: light_bedroom_pc_nightlight
+  '0xa4c1381b0d3a90a8':
+    friendly_name: light_bedroom_nightlight_right
+  '0x54ef441000313804':
+    friendly_name: light_curtain_mainroom
+  '0x54ef44100031341f':
+    friendly_name: light_curtain_kitchen
+  '0xa4c138e15f46046e':
+    friendly_name: light_kitchen_table_lamp
+  '0xa4c138881ad5f2a7':
+    friendly_name: light_kitchen_bar_lamp
+  '0xa4c1389d59a26238':
+    friendly_name: light_kitchen_set
+  '0xa4c1385ff0c3da73':
+    friendly_name: light_kitchen_spotlights
+  '0xa4c138227e28f0f5':
+    friendly_name: light_childroom_main
+  '0xa4c138af504f84c7':
+    friendly_name: light_childroom_bed
+  '0xa4c13835b22ecd89':
+    friendly_name: light_childroom_spotlights
+  '0xa4c138a0cfb8e117':
+    friendly_name: ventilation_bath
+  '0xa4c1382b628aacb6':
+    friendly_name: light_bath_shelf
+  '0xa4c1385548a794f5':
+    friendly_name: ventilation_shower
+  '0xa4c138b789359794':
+    friendly_name: light_shower_main_spotlights
+  '0xa4c1385a75956001':
+    friendly_name: light_shower_shower_spotlights
+  '0xa4c138dbf32f44f8':
+    friendly_name: light_shower_shelf_light
+  '0x00158d000398f9f6':
+    friendly_name: motion_shower_shower
+  '0x00158d0003a106ea':
+    friendly_name: door_locker2_hall_right
+  '0x00158d0003536fac':
+    friendly_name: door_locker2_hall_left
+  '0x00158d0003a10585':
+    friendly_name: door_locker3_hall_left
+  '0xa4c138f709069275':
+    friendly_name: curtain_bedroom_bobbinet_balcony
+  '0x00158d00090e5cf7':
+    friendly_name: temperature_childroom
+  '0x00158d000396c7ab':
+    friendly_name: door_locker_hall_right
+  '0x00158d000396c934':
+    friendly_name: door_locker3_hall_right
+  '0x00158d0002113158':
+    friendly_name: water_leak_water_hub
+  '0xa4c1381710c7c92a':
+    friendly_name: curtain_mainroom_bobbinet
+  '0x54ef4410005d97df':
+    friendly_name: presence_shower
+  '0x00158d0003cc41a2':
+    friendly_name: motion_kitchenset_right
+  '0x00158d0000f6b2fa':
+    friendly_name: motion_kitchenset_left
+  '0xa4c1381257c87bdc':
+    friendly_name: curtain_kitchen_bobbinet
+  '0x00124b0022145c82':
+    friendly_name: co2_bedroom
+  '0x00158d00039d4fea':
+    friendly_name: door_entrance
+  '0x54ef4410006ff081':
+    friendly_name: radiator_mainroom
+  '0x54ef441000703fc3':
+    friendly_name: radiator_childroom
+  '0x00158d0008e038bc':
+    friendly_name: water_leak_shower_sink
+  '0x00158d00091c7eac':
+    friendly_name: temperature_winecooler
+  '0x00158d0003a5d05d':
+    friendly_name: lock_door
+  '0x00158d00090e6601':
+    friendly_name: temperature_shower
+groups: {}
+availability:
+  enabled: true
+  active:
+    timeout: 1440
+  passive:
+    timeout: 1440
+version: 3

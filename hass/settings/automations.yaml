@@ -246,3 +246,19 @@
     target:
       device_id: d217abb5dd76093411769c4677b6b002
   mode: single
+- id: '1732457430467'
+  alias: Limit Kolya Alisa Volume Level
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - media_player.yandex_station_940050344110102101cb
+    attribute: volume_level
+  conditions: []
+  actions:
+  - action: media_player.volume_set
+    metadata: {}
+    data:
+      volume_level: 0.5
+    target:
+      entity_id: media_player.yandex_station_940050344110102101cb

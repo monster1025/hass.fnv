@@ -12,6 +12,10 @@ uniservice_epd_sensor:
     fonvizina_epd_balance: sensor.fonvizina_epd_balance
     fonvizina_trash_balance: sensor.fonvizina_trash_balance
     fonvizina_kladovka_balance: sensor.fonvizina_kladovka_balance
+  heat_total: sensor.heat_total
+  counter_cold_outer: sensor.counter_cold_outer
+  counter_hot_outer: sensor.counter_hot_outer
+  notify: telegram_monster
   global_dependencies:
     - globals
     

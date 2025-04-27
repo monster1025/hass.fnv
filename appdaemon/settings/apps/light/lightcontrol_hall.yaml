@@ -9,6 +9,8 @@ light_control_hall:
     - binary_sensor.door_locker_hall_left_contact 
     - binary_sensor.door_locker2_hall_left_contact
     - binary_sensor.door_locker2_hall_right_contact
+  events:
+    - door_opened
   control_entity: light.light_hall_long
   timeout: 120
   constraint: input_boolean.locker_light_control

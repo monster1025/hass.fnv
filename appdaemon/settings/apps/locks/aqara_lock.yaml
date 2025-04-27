@@ -1,0 +1,8 @@
+aqara_lock:
+  module: aqara_lock
+  class: AqaraLock
+  lock_state_entity: sensor.lock_door_action
+  constraint: input_boolean.aqara_lock_report
+  notify: telegram_monster
+  global_dependencies:
+    - globals

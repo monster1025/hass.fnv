@@ -5,7 +5,6 @@ import adbase as ad
 
 class TRVUpdater(hass.Hass):
     entities = []
-    date_constraint = {}
 
     def initialize(self):
         self.log('starting initialize')
@@ -38,6 +37,6 @@ class TRVUpdater(hass.Hass):
                 self.log('[mqtt publish] topic: "{0}" value: {1}'.format(sensor_topic, sensor_payload))
                 self.call_service("mqtt/publish", topic=sensor_topic, payload=sensor_payload)
 
-                temperature_payload = '{"external_temperature_input":"' + new_state + '"}'
+                temperature_payload = '{"external_temperature_input":' + new_state + '}'
                 self.log('[mqtt publish] topic: "{0}" value: {1}'.format(sensor_topic, temperature_payload))
                 self.call_service("mqtt/publish", topic=sensor_topic, payload=temperature_payload)

@@ -85,7 +85,6 @@ class WaterValveControl(hass.Hass):
     self.log("Turning off water devices.")
     self.turn_off(self.args['water_valve'])
     for device in self.args['water_devices']:
-      device = self.args['water_devices'][device]
       if 'switch' in device:
         self.log('switching off: {}'.format(device))
         self.turn_off(device)
