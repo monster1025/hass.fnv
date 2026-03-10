@@ -1,0 +1,212 @@
+import appdaemon.plugins.hass.hassapi as hass
+from datetime import time, datetime, timedelta
+
+class ClimateControl(hass.Hass):
+    def initialize(self):
+        # Настройки из YAML
+        self.thermostat = self.args.get("thermostat", "climate.virtual_thermostat")
+        self.ac = self.args.get("ac", "climate.ac_bedroom")
+        self.radiators = self.args.get("radiators", ["climate.radiator_bedroom", "climate.radiator_bedroom_balcony"])
+        self.radiator_enabled = self.args.get("radiator_enabled", "input_boolean.radiator_enabled")
+        self.presence_sensors = self.args.get("presence_sensors", None)
+        self.no_presence_delay = int(self.args.get("no_presence_delay", 1800)) # секунд
+        self.window_sensors = self.args.get("window_sensors", None)
+        self.window_open_delay = int(self.args.get("window_open_delay", 300)) # секунд
+        self.alarm = self.args.get("alarm", "alarm_control_panel.ha_alarm")
+
+        self.listen_state(self.thermostat_changed, self.thermostat)
+        self.listen_state(self.thermostat_temp_changed, self.thermostat, attribute="temperature")
+        self.listen_state(self.thermostat_mode_changed, self.thermostat, attribute="hvac_mode")
+        if self.presence_sensors is not None:
+            self.listen_state(self.presence_changed, self.presence_sensors)
+        if self.window_sensors is not None:
+            self.listen_state(self.window_changed, self.window_sensors)
+        self.listen_state(self.radiator_enabled_changed, self.radiator_enabled)
+        self.listen_state(self.alarm_changed, self.alarm)
+        self.run_every(self.periodic_check, self.datetime() + timedelta(seconds=5), 60)
+
+        self.no_presence_handle = None
+        self.window_open_handle = None
+        self.last_presence = self.datetime()
+        self.last_window_open = None
+        self.updating_thermostat = False
+        self.listen_state(self.ac_changed, self.ac)
+        self.listen_state(self.ac_temp_changed, self.ac, attribute="temperature")
+        self.auto_off_reason = None
+
+    def thermostat_changed(self, entity, attribute, old, new, kwargs):
+        self.log(f"Термостат изменён: {new}")
+        self.control_climate()
+
+    def thermostat_temp_changed(self, entity, attribute, old, new, kwargs):
+        self.log(f"Изменилась температура термостата: {old} → {new}")
+        self.control_climate()
+
+    def thermostat_mode_changed(self, entity, attribute, old, new, kwargs):
+        self.log(f"Изменился режим термостата: {old} → {new}")
+        self.control_climate()
+
+    def presence_changed(self, entity, attribute, old, new, kwargs):
+        if new == "on":
+            self.last_presence = self.datetime()
+            if self.no_presence_handle:
+                self.cancel_timer(self.no_presence_handle)
+                self.no_presence_handle = None
+            self.control_climate()
+        else:
+            if not self.no_presence_handle:
+                self.no_presence_handle = self.run_in(self.no_presence_timeout, self.no_presence_delay)
+
+    def no_presence_timeout(self, kwargs):
+        self.log("В комнате долго нет людей — отключаю климат.")
+        self.turn_off_all(reason="no_presence")
+
+    def window_changed(self, entity, attribute, old, new, kwargs):
+        if new == "on":
+            if not self.window_open_handle:
+                self.window_open_handle = self.run_in(self.window_open_timeout, self.window_open_delay)
+        else:
+            if self.window_open_handle:
+                self.cancel_timer(self.window_open_handle)
+                self.window_open_handle = None
+            self.auto_off_reason = None  # сбросить флаг после закрытия окна
+            self.control_climate()
+
+    def window_open_timeout(self, kwargs):
+        self.log("Окно открыто более 5 минут — отключаю климат.")
+        self.turn_off_all(reason="window")
+
+    def radiator_enabled_changed(self, entity, attribute, old, new, kwargs):
+        self.control_climate()
+
+    def alarm_changed(self, entity, attribute, old, new, kwargs):
+        self.control_climate()
+
+    def periodic_check(self, kwargs):
+        self.control_climate()
+
+    def control_climate(self):
+        self.log(f"Проверка климата: alarm={self.get_state(self.alarm)}, окна={self.window_sensors}, присутствие={self.presence_sensors}")
+        mode = self.get_state(self.thermostat, attribute="hvac_mode")
+        if mode is None:
+            mode = self.get_state(self.thermostat)
+        target_temp = self.get_state(self.thermostat, attribute="temperature")
+        self.log(f"Режим термостата (hvac_mode/state): {mode}, температура: {target_temp}")
+        # Проверка сигнализации
+        if self.get_state(self.alarm) != "disarmed":
+            self.log("Сигнализация активна — автоматика отключена.")
+            self.turn_off_all()
+            return
+
+        # Проверка окон
+        if self.window_sensors:
+            if any(self.get_state(s) == "on" for s in self.window_sensors):
+                self.log("Окно открыто — автоматика отключена.")
+                self.turn_off_all()
+                return
+
+        # Проверка присутствия
+        if self.presence_sensors:
+            if all(self.get_state(s) == "off" for s in self.presence_sensors):
+                if (self.datetime() - self.last_presence).total_seconds() > self.no_presence_delay:
+                    self.log("Нет людей — автоматика отключена.")
+                    self.turn_off_all()
+                    return
+
+        # Проверка режима термостата
+        if mode == "off":
+            self.log("Термостат в off — автоматика отключена.")
+            self.turn_off_all()
+            return
+        elif mode == "cool":
+            self.log("Режим охлаждения.")
+            self.set_ac_mode("cool", target_temp)
+            self.set_radiators_off()
+            return
+        elif mode == "heat":
+            # Определяем сезон
+            radiator_on = self.get_state(self.radiator_enabled) == "on"
+            now = datetime.now().time()
+            self.log(f"radiator_enabled: {radiator_on}, время: {now}")
+            if not radiator_on:
+                self.log("Лето — только сплит-система.")
+                self.set_ac_mode("heat", target_temp)
+                self.set_radiators_off()
+            else:
+                if time(23,0) <= now or now < time(7,0):
+                    self.log("Зима, ночь — только сплит-система в режиме обогрева.")
+                    self.set_ac_mode("heat", target_temp)
+                    self.set_radiators_off()
+                else:
+                    self.log("Зима, день — только радиаторы.")
+                    self.set_ac_off()
+                    self.set_radiators_on(target_temp)
+
+    def set_ac_mode(self, mode, temp):
+        current_mode = self.get_state(self.ac)
+        current_temp = self.get_state(self.ac, attribute="temperature")
+
+        current_temp_f = int(current_temp)
+        temp_f = int(temp)
+
+        self.log(f"Текущий режим AC: {current_mode}, температура: {current_temp_f} (требуется: {temp_f})")
+        if current_mode == mode and isinstance(current_temp_f, int) and isinstance(temp_f, int) and abs(current_temp_f - temp_f) < 0.1:
+            self.log(f"AC {self.ac}: режим {mode}, температура {temp} — уже установлены, не отправляю команду.")
+            return
+        self.updating_thermostat = True
+        self.call_service("climate/set_temperature", entity_id=self.ac, temperature=temp, hvac_mode=mode)
+        self.log(f"AC {self.ac}: режим {mode}, температура {temp}")
+        self.updating_thermostat = False
+
+    def set_ac_off(self):
+        current_mode = self.get_state(self.ac)
+        if current_mode == "off":
+            self.log(f"AC {self.ac}: уже выключен, не отправляю команду.")
+            return
+        self.updating_thermostat = True
+        self.call_service("climate/set_hvac_mode", entity_id=self.ac, hvac_mode="off")
+        self.log(f"AC {self.ac}: выключен")
+        self.updating_thermostat = False
+
+    def set_radiators_on(self, temp):
+        for r in self.radiators:
+            self.updating_thermostat = True
+            self.call_service("climate/set_hvac_mode", entity_id=r, hvac_mode="heat")
+            self.call_service("climate/set_temperature", entity_id=r, temperature=temp)
+            self.log(f"Радиатор {r}: режим heat, температура {temp}")
+            self.updating_thermostat = False
+
+    def set_radiators_off(self):
+        for r in self.radiators:
+            self.updating_thermostat = True
+            self.call_service("climate/set_hvac_mode", entity_id=r, hvac_mode="off")
+            self.log(f"Радиатор {r}: выключен")
+            self.updating_thermostat = False
+
+    def turn_off_all(self, reason=None):
+        self.auto_off_reason = reason
+        self.set_ac_off()
+        self.set_radiators_off()
+
+    def ac_changed(self, entity, attribute, old, new, kwargs):
+        if self.updating_thermostat:
+            return
+        if self.auto_off_reason:
+            self.log(f"AC выключен автоматикой ({self.auto_off_reason}), не синхронизирую термостат в off")
+            return
+        mode = self.get_state(self.ac)
+        temp = self.get_state(self.ac, attribute="temperature")
+        self.log(f"AC изменён вручную: режим {mode}, температура {temp}")
+        # Синхронизируем виртуальный термостат
+        self.updating_thermostat = True
+        self.call_service("climate/set_hvac_mode", entity_id=self.thermostat, hvac_mode=mode)
+        self.call_service("climate/set_temperature", entity_id=self.thermostat, temperature=temp)
+        self.updating_thermostat = False
+
+    def ac_temp_changed(self, entity, attribute, old, new, kwargs):
+        if self.updating_thermostat:
+            return
+        self.log(f"AC температура изменена вручную: {old} → {new}")
+        self.updating_thermostat = True
+        self.call_service("climate/set_temperature", entity_id=self.thermostat, temperature=new)
+        self.updating_thermostat = False

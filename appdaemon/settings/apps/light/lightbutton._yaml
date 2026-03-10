@@ -1,0 +1,29 @@
+#################################
+#          LIGHT BUTTONS        #
+#################################
+# light_button_bath:
+#   module: lightbutton
+#   class: LightButton
+#   sensor: binary_sensor.wall_switch_bath
+#   entities: light.bath
+#   # control_input: input_boolean.bath_light_control
+#   global_dependencies:
+#     - globals
+
+light_button_main:
+  module: lightbutton
+  class: LightButton
+  sensor: sensor.bed_button
+  entities: light.yeelight_color1_34ce008fe328,light.yeelight_color1_286c071065c7,light.yeelight_mono1_34ce0087ff33,light.yeelight_mono1_f0b4290e5444,light.yeelight_mono1_f0b429a8f6df,light.yeelight_mono1_286c07f12bed,light.yeelight_mono1_f0b429a8d936,light.lamp1
+  global_dependencies:
+    - globals
+
+light_button_hall:
+  module: lightbutton
+  class: LightButton
+  sensor: sensor.0x00158d000183a5fe_action
+  entities: switch.plug_light_hall
+  global_dependencies:
+    - globals
+
+

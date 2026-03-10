@@ -1,0 +1,368 @@
+- id: '1673173451954'
+  alias: Doorbell to Alice
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.0x00158d0003a5d05d_lock
+    - sensor.0x00158d0003a5d05d_action
+    to: doorbell
+  condition: []
+  action:
+  - service: media_player.play_media
+    data:
+      media_content_type: text
+      media_content_id: Звонок в дверь!
+      extra:
+        volume_level: 0.6
+    target:
+      device_id:
+      - b7ae13cff2fb04a56f1611a7bd9fdb5d
+      - e600d40f953494c41ec919d2148fd570
+      - 49e5a1a4d554d924f61ecaa8968630bf
+      - 644968e9ab73b2930d141deb2aaec43f
+      - 37e299b4ee90a2e39ae7e04328439ff4
+      - 8883de9fc71bef0b663c61faa4fbefb4
+      - f6dbda8398f290149bc8cb48a858452c
+  - service: notify.telegram
+    data:
+      message: Звонок в дверь!
+  mode: single
+- id: '1694942205257'
+  alias: Unavailable entity detection & notification
+  description: ''
+  use_blueprint:
+    path: gmlupatelli/unavailable_entities_notification.yaml
+    input:
+      actions:
+      - service: notify.telegram
+        data:
+          message: 'У вас есть недоступные устройства: {{entities}}'
+          data:
+            parse_mode: html
+      exclude:
+        device_id:
+        - fd4ed129390c68716ee6b5ca4ee6abe5
+        - a5ddb672314ab72275816e22b91c1e0a
+- id: '1696509659566'
+  alias: Turn On Mirror When Heater Is On
+  description: ''
+  trigger:
+  - platform: device
+    type: turned_on
+    device_id: 156bb319cb4e575d641e681a1775d672
+    entity_id: c3ec9a6bd6247cdf3771e968416f7a1d
+    domain: switch
+  condition: []
+  action:
+  - type: turn_on
+    device_id: a86a73f9c0cded2becbaea4b58a0c3ca
+    entity_id: ca2d574ba695471945a76eb9fbd14f7c
+    domain: switch
+  mode: single
+- id: '1700337065799'
+  alias: Turn_on_AC_heater_evening
+  description: ''
+  trigger:
+  - platform: time
+    at: '23:00:00'
+  condition:
+  - condition: state
+    entity_id: sensor.tag_danil_iphone
+    state: mainroom
+  action:
+  - service: remote.send_command
+    target:
+      device_id: 3493f23712217b8085d5e05870b37fb4
+    data:
+      command: power_on
+      device: ac
+  mode: single
+- id: '1700337256838'
+  alias: Turn_off_AC_at_morning
+  description: ''
+  triggers:
+  - at: 07:00:00
+    trigger: time
+  conditions: []
+  actions:
+  - action: climate.set_hvac_mode
+    metadata: {}
+    target:
+      entity_id: climate.ac_bedroom
+    data:
+      hvac_mode: 'off'
+  - action: fan.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: fan.ventiliatsionnaia_sistema
+  mode: single
+- id: '1703092205692'
+  alias: Turn on curtain light when opened
+  description: ''
+  trigger:
+  - platform: device
+    device_id: 4b8180d9d908e128920565c0bd31e661
+    domain: cover
+    entity_id: 03d25d0c4f844c78905fa58906f7a383
+    type: opened
+  condition: []
+  action:
+  - type: turn_on
+    device_id: b446ed5b21362d52ea95df7a716274cc
+    entity_id: 0ff56edad96924c2438d3df1fa7b27f7
+    domain: switch
+  mode: single
+- id: '1703092227298'
+  alias: Turn off curtain light when closed
+  description: ''
+  trigger:
+  - platform: device
+    device_id: 4b8180d9d908e128920565c0bd31e661
+    domain: cover
+    entity_id: 03d25d0c4f844c78905fa58906f7a383
+    type: closed
+  condition: []
+  action:
+  - type: turn_off
+    device_id: b446ed5b21362d52ea95df7a716274cc
+    entity_id: 0ff56edad96924c2438d3df1fa7b27f7
+    domain: switch
+  mode: single
+- id: '1706383112067'
+  alias: Control Washer+Dishwasher
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - switch.dishwasher
+    - switch.washer
+    from: 'on'
+    to: 'off'
+  condition: []
+  action:
+  - service: switch.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id:
+      - switch.washer
+      - switch.dishwasher
+  mode: single
+- id: '1722417271264'
+  alias: Bath ventilation timer
+  description: ''
+  trigger:
+  - entity_id: fan.ventilation_bath
+    for:
+      minutes: 15
+    platform: state
+    to: 'on'
+  condition: []
+  action:
+  - data: {}
+    entity_id: fan.ventilation_bath
+    service: homeassistant.turn_off
+  mode: single
+- id: '1722417292820'
+  alias: Shower ventilation timer
+  description: ''
+  trigger:
+  - entity_id: fan.ventilation_shower
+    for:
+      minutes: 15
+    platform: state
+    to: 'on'
+  condition: []
+  action:
+  - data: {}
+    entity_id: fan.ventilation_shower
+    service: homeassistant.turn_off
+  mode: single
+- id: '1728058650984'
+  alias: Childroom Turn Off Ac in the morning
+  description: ''
+  trigger:
+  - platform: time
+    at: 07:00:00
+  condition: []
+  action:
+  - repeat:
+      count: 2
+      sequence:
+      - data:
+          command: power_off_2
+          device: ac
+        action: remote.send_command
+        target:
+          device_id: d217abb5dd76093411769c4677b6b002
+  mode: single
+- id: '1728058703218'
+  alias: Childroom Turn On Ac in the evening
+  description: ''
+  trigger:
+  - platform: time
+    at: '23:00:00'
+  condition:
+  - condition: state
+    entity_id: sensor.tag_danil_iphone
+    state: mainroom
+  action:
+  - data:
+      command: power_on
+      device: ac
+    action: remote.send_command
+    target:
+      device_id: d217abb5dd76093411769c4677b6b002
+  mode: single
+- id: '1752861666697'
+  alias: Громкость по умолчанию Спальня
+  description: ''
+  use_blueprint:
+    path: gist.githubusercontent.com/yandex_station_default_volume.yaml
+    input:
+      yandex_station: media_player.yandex_station_m00fhe2003seqr
+      number_volume: 5
+- id: '1752930144657'
+  alias: Громкость по умолчанию Кухня
+  description: ''
+  use_blueprint:
+    path: gist.githubusercontent.com/yandex_station_default_volume.yaml
+    input:
+      yandex_station: media_player.yandex_station_m00r46000m53db
+      number_volume: 5
+- id: '1752930171971'
+  alias: Громкость по умолчанию Душевая
+  description: ''
+  use_blueprint:
+    path: gist.githubusercontent.com/yandex_station_default_volume.yaml
+    input:
+      yandex_station: media_player.yandex_station_ff98f029ab48468d28c557be
+      number_volume: 5
+- id: '1752930196035'
+  alias: Громкость по умолчанию Детская
+  description: ''
+  use_blueprint:
+    path: gist.githubusercontent.com/yandex_station_default_volume.yaml
+    input:
+      yandex_station: media_player.yandex_station_940050344110102101cb
+- id: '1752930212912'
+  alias: Громкость по умолчанию Ванна
+  description: ''
+  use_blueprint:
+    path: gist.githubusercontent.com/yandex_station_default_volume.yaml
+    input:
+      yandex_station: media_player.yandex_station_ly00000000000008674600007209d3f5
+      number_volume: 5
+- id: '1753212993227'
+  alias: Low Battery Notifications & Actions
+  description: ''
+  use_blueprint:
+    path: Blackshome/low-battery-notifications-and-actions.yaml
+    input:
+      include_time: time_enabled
+      time: '10:00:00'
+      battery_level: 10
+      exclude_sensors:
+        entity_id:
+        - sensor.monsterphone13_battery_level
+      include_easy_notify: disabled_easy_notify
+      notify_device: []
+      include_persistent_notification: disabled_persistent_notification
+      include_custom_actions: enable_custom_actions
+      custom_actions:
+      - action: notify.telegram_monster
+        data:
+          message: '<b>Садится батарея в датчиках:</b>
+
+
+            {{all_sensors}}'
+          data:
+            parse_mode: html
+- id: '1767036452762'
+  alias: Дверь в гостиную - закрыта
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.door_mainroom_slider_contact
+    to:
+    - 'off'
+    from:
+    - 'on'
+  conditions: []
+  actions:
+  - action: light.turn_off
+    metadata: {}
+    target:
+      entity_id: light.plug_yolka
+    data: {}
+  - action: input_boolean.turn_on
+    metadata: {}
+    target:
+      entity_id: input_boolean.guest_mode
+    data: {}
+  mode: single
+- id: '1767036484608'
+  alias: Дверь в гостиную - открыта
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.door_mainroom_slider_contact
+    to:
+    - 'on'
+    from:
+    - 'off'
+  conditions: []
+  actions:
+  - action: light.turn_on
+    metadata: {}
+    target:
+      entity_id: light.plug_yolka
+    data: {}
+  - action: input_boolean.turn_off
+    metadata: {}
+    target:
+      entity_id: input_boolean.guest_mode
+    data: {}
+  mode: single
+- id: '1768899857603'
+  alias: Детская - Утром отключаем отопление
+  description: ''
+  triggers:
+  - trigger: time
+    at: 08:00:00
+  conditions:
+  - condition: state
+    entity_id: input_boolean.radiator_enabled
+    state:
+    - 'on'
+  actions:
+  - action: climate.set_temperature
+    metadata: {}
+    target:
+      entity_id: climate.radiator_childroom
+    data:
+      temperature: 22
+  mode: single
+- id: '1768899913660'
+  alias: Детская - Вечером включаем отопление
+  description: ''
+  triggers:
+  - trigger: time
+    at: '22:00:00'
+  conditions:
+  - condition: state
+    entity_id: input_boolean.radiator_enabled
+    state:
+    - 'on'
+  actions:
+  - action: climate.set_temperature
+    metadata: {}
+    target:
+      entity_id: climate.radiator_childroom
+    data:
+      temperature: 24
+  mode: single

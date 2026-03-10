@@ -1,0 +1,8 @@
+groups:
+  module: groups
+  class: Groups
+  friendly_name: Автоматические группы
+  entities: # list of entities
+    - media_player.lg_webos_smart_tv
+  # device_type: light
+  # entity_part: "_"

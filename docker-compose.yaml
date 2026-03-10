@@ -1,0 +1,231 @@
+version: '3'
+services:
+  ddns:
+   build: 
+    context: ./ddns/docker
+   env_file: ./ddns/settings/token.env
+   environment:
+     - SUBDOMAIN="home-fnv"
+   restart: always
+
+  mosquitto:
+    build: ./mosquitto/docker
+    container_name: mosquitto
+    env_file: ./mosquitto/settings/mqtt.env
+    ports:
+      - "1883:1883"
+    restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: 50m 
+
+  postgres:
+    image: postgres:16.1
+    restart: always
+    volumes:
+      - ./postgres/settings/data:/var/lib/postgresql/data
+    env_file: ./postgres/settings/postgres.env
+    logging:
+      driver: json-file
+      options:
+        max-size: 50m 
+
+  hass:
+    image: "homeassistant/home-assistant:stable" #stable
+    #image: ghcr.io/home-assistant/home-assistant:stable
+    container_name: hass
+    volumes:
+      - ./hass/settings:/config
+      - /dev/hass-wolpipe:/dev/hass-wolpipe
+      - ./secrets/hass-fnv/settings/secrets.yaml:/config/secrets.yaml:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "8123:8123"
+    #  - "29898:9898/udp"
+    #  - "24321:4321/udp"
+    #  - "251827:51827" #Homekit
+    devices:
+      - "/dev/ttyUSB0:/dev/ttyUSB0"
+    depends_on:
+     - mosquitto
+     - postgres
+    #network_mode: "host"
+    #privileged: true
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8123"]
+      interval: 30s
+      timeout: 10s
+      retries: 6
+    logging:
+      driver: json-file
+      options:
+        max-size: 50m
+
+  appdaemon:
+    build:
+      context: ./appdaemon/docker
+    container_name: appdaemon
+    depends_on:
+      - hass
+    volumes:
+      - ./appdaemon/settings:/conf
+      - ./secrets/hass-fnv/settings/secrets.yaml:/conf/secrets.yaml:ro
+      - /etc/localtime:/etc/localtime:ro
+    restart: always
+    links:
+      - "hass"
+    logging:
+      driver: json-file
+      options:
+          max-size: "10m"
+          max-file: "5"
+
+  node-red:
+    build:
+      context: ./node-red/docker
+    #image: nodered/node-red:latest
+    environment:
+      - TZ=Europe/Moscow
+    ports:
+      - "1880:1880"
+    depends_on:
+     - hass
+    restart: always
+    volumes:
+      - ./node-red/settings/data:/data
+
+  esphome:
+    image: esphome/esphome:latest #2025.6 #esphome-armv7
+    container_name: esphome
+    ports:
+      - "6052:6052"
+    volumes:
+      - ./esphome/settings:/config
+      - ./secrets/hass-fnv/settings/secrets.yaml:/config/secrets.yaml:ro
+    #devices:
+    # - "/dev/ttyUSB0:/dev/ttyUSB0"
+    #network_mode: host
+    logging:
+      driver: json-file
+      options:
+          max-size: "10m"
+          max-file: "5"
+
+  zigbee2mqtt:
+    image: koenkk/zigbee2mqtt:latest  #тут отваливается замок, поэтому не latest
+    container_name: zigbee2mqtt
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./zigbee2mqtt/settings:/app/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      interval: 30s
+      timeout: 10s
+      retries: 6
+    restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: 50m  
+
+  neptun2mqtt:
+    build:
+      context: ./neptun2mqtt/docker
+      dockerfile: Dockerfile
+    restart: always
+    container_name: neptun2mqtt
+    env_file: ./neptun2mqtt/settings/neptun.env
+    logging:
+      driver: json-file
+      options:
+          max-size: "10m"
+          max-file: "5"
+
+  nginx:
+    image: nginx
+    hostname: nginx
+    container_name: nginx
+    links:
+      - "hass"
+      - "certbot"
+    volumes:
+        - ./nginx/settings/site-confs:/etc/nginx/conf.d
+        - ./certbot/settings/data:/config/keys
+    ports:
+        - "80:80"
+        - "443:443"
+    restart: always
+    logging:
+      driver: json-file
+      options:
+          max-size: "10m"
+          max-file: "5"
+
+  certbot:
+    build:
+      context: ./certbot/docker
+      dockerfile: Dockerfile
+    restart: always
+    container_name: certbot
+    volumes:
+        - ./certbot/docker/update_certs.sh:/update_certs.sh:ro
+        - ./certbot/settings/data:/etc/letsencrypt
+        - /etc/localtime:/etc/localtime:ro
+    ports:
+        - "8081:80"
+    #entrypoint: certbot
+    #command: certonly --standalone --agree-tos --non-interactive --email admin@yandex5.ru -d gitea.yandex5.ru
+    logging:
+      driver: json-file
+      options:
+          max-size: "10m"
+          max-file: "5"
+
+  homeconnect2mqtt:
+    build:
+      context: ./homeconnect2mqtt/docker
+      dockerfile: Dockerfile
+    restart: always
+    container_name: homeconnect2mqtt
+    ports:
+        - "5001:5000"
+    env_file: ./homeconnect2mqtt/settings/homeconnect2mqtt.env
+    volumes:
+        - ./homeconnect2mqtt/settings/config.json:/app/config.json:ro
+    logging:
+      driver: json-file
+      options:
+          max-size: "10m"
+          max-file: "5"
+
+  matter-bridge:
+    image: ghcr.io/t0bst4r/home-assistant-matter-hub:latest
+    container_name: matter-bridge
+    ports:
+      - "8482:8482"
+      - "5353:5353"
+      - "5540:5540"
+      - "5541:5541"
+    volumes:
+      - ./matter-bridge/settings/data:/data
+      - ./secrets/hass-fnv/settings/secrets.yaml:/config/secrets.yaml:ro
+    env_file: ./matter-bridge/settings/matter-bridge.env
+    network_mode: host
+    logging:
+      driver: json-file
+      options:
+          max-size: "10m"
+          max-file: "5"
+
+  keenetic:
+    build:
+      context: ./keenetic/docker
+      dockerfile: Dockerfile
+    container_name: keenetic
+    restart: unless-stopped
+    ports:
+      - "8001:8000"
+    env_file: ./keenetic/settings/keenetic.env

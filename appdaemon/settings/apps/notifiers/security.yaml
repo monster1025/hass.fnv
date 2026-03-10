@@ -1,0 +1,10 @@
+#################################
+#       INVALID AUTH REPORT     #
+#################################
+invalid_auth_report:
+  class: Security
+  module: security
+  alice: media_player.yandex_station_m00r46000m53db
+  notify: telegram
+  global_dependencies:
+    - globals

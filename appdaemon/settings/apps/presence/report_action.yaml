@@ -1,0 +1,10 @@
+#################################
+#        HOME PRESENSE          #
+#################################
+report_action:
+  module: report_action
+  class: ReportByPresence
+  entity: group.report_entities
+  notify: telegram
+  global_dependencies:
+    - globals

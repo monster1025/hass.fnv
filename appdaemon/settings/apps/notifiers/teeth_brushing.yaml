@@ -1,0 +1,15 @@
+#################################
+#  TEETH BRUSHING REMINDER      #
+#################################
+teeth_danil_brush_reminder:
+  class: Teeth
+  module: teeth_brushing
+  constraint: input_boolean.teeth_brushing_reminder
+  mute_boolean: input_boolean.teeth_muted
+  notify: telegram_monster
+  remind_interval: 1800
+  mute_button: sensor.button_shower_sink_action
+  home_sensors: [person.danil]
+  alice: media_player.yandex_station_ff98f029ab48468d28c557be
+  global_dependencies:
+    - globals

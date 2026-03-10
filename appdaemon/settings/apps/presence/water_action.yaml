@@ -1,0 +1,14 @@
+#################################
+#        HOME PRESENSE          #
+#################################
+water_action:
+  module: water_action
+  class: WaterValveControl
+  water_valve: switch.watercontrol_valves
+  notify: telegram
+  constraint: input_boolean.water_control
+  water_devices:
+    - binary_sensor.washer_running # стиралка
+    - binary_sensor.hc_dishwasher_running # посудомойка
+  global_dependencies:
+    - globals

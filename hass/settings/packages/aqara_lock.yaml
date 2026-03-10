@@ -1,0 +1,7 @@
+mqtt:
+  sensor:
+    - name: door_lock_mqtt_action
+      unique_id: door_lock_mqtt_action
+      state_topic: "z2m-tcp/lock_door"
+      value_template: "{{ value_json.action }}"
+      json_attributes_topic: "z2m-tcp/lock_door"

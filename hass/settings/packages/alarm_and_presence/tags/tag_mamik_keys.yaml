@@ -1,0 +1,17 @@
+sensor:
+  - platform: mqtt_room
+    device_id: !secret tag_mama_keys
+    name: tag_mama_keys
+    state_topic: home/presence
+    timeout: 15
+    away_timeout: 60
+
+input_boolean:
+  tag_mama_keys:
+    name: Мама (Ключи)
+    initial: on
+
+homeassistant:
+  customize:
+    sensor.tag_mama_keys:
+      friendly_name: Мама (Ключи)

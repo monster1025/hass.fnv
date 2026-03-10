@@ -1,0 +1,13 @@
+#################################
+#  TEETH BRUSHING REMINDER      #
+#################################
+dishwasher:
+  class: Dishwasher
+  module: dishwasher
+  constraint: input_boolean.dishwasher_state_light
+  counter: counter.dishwasher_door_open_count
+  door_sensor: binary_sensor.hc_dishwasher_door
+  run_state: sensor.hc_dishwasher_state
+  lamp: light.espresense_kitchen_led_1
+  global_dependencies:
+    - globals

@@ -1,0 +1,5 @@
+light_mainroom:
+  module: light_mainroom
+  class: MainRoomLightControl
+  presence_sensor: sensor.presence_aqara_mainroom_presence_event11
+  light: light.light_mainroom_pc_spotlight

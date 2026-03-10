@@ -1,0 +1,14 @@
+#################################
+#          Door Notifier        #
+#################################
+child_door_notifier:
+  module: child_door_notifier
+  class: ChildDoorNotifier
+  sensor: binary_sensor.door_childroom_contact
+  entities: 
+    - light.svetlana_bedside_lamp_rgbww_light
+    - light.danil_bedside_lamp_rgbww_light
+  global_dependencies:
+    - globals
+
+

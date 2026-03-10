@@ -1,0 +1,18 @@
+# Example configuration.yaml entry
+climate:
+  - platform: dual_smart_thermostat
+    name: bedroom_climate
+    target_sensor: sensor.temperature_bedroom_temperature
+    heater: input_boolean.bedroom_climate_heater_switch
+    cooler: input_boolean.bedroom_climate_cooler_switch
+    openings:
+      - binary_sensor.window1
+      - binary_sensor.window2
+    openings_scope: [heat, cool]
+    precision: 1
+
+input_boolean:
+  bedroom_climate_heater_switch:
+    name: Виртуальный контроллер нагрева Спальня
+  bedroom_climate_cooler_switch:
+    name: Виртуальный контроллер охлаждения Спальня

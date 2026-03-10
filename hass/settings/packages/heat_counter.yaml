@@ -1,0 +1,35 @@
+template:
+- sensor:
+  - name: heat_total
+    unit_of_measurement: gKal
+    default_entity_id: sensor.heat_total
+    state: '{{ states(''sensor.saures_teploschetchik_fonvizina'') | float + 32.7600 | round(4) }}'
+  - name: heat_hourly_cost
+    unit_of_measurement: '₽'
+    state: "{{ states('sensor.heat_hourly') | float * 3035 | round(2) }}"
+  - name: heat_daily_cost
+    unit_of_measurement: '₽'
+    state: "{{ states('sensor.heat_daily') | float * 3035 | round(2) }}"
+  - name: heat_monthly_cost
+    unit_of_measurement: '₽'
+    state: "{{ states('sensor.heat_monthly') | float * 3035 | round(2) }}"
+
+utility_meter:
+  heat_hourly:
+    source: sensor.saures_teploschetchik_fonvizina
+    cycle: hourly
+  heat_daily:
+    source: sensor.saures_teploschetchik_fonvizina
+    cycle: daily
+  heat_monthly:
+    source: sensor.saures_teploschetchik_fonvizina
+    cycle: monthly
+
+homeassistant:
+  customize:
+    sensor.heat_hourly:
+      friendly_name: Тепло в час
+    sensor.heat_hourly:
+      friendly_name: Тепло в день
+    sensor.heat_hourly:
+      friendly_name: Тепло в месяц

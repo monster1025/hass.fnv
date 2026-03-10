@@ -1,0 +1,11 @@
+#################################
+#        HOME PRESENSE          #
+#################################
+alarm_panel_action:
+  module: alarm_panel_action
+  class: AlarmPanelAction
+  ha_panel: alarm_control_panel.ha_alarm
+  presence_extended: input_select.presence_extended
+  extended_timeout: 300
+  global_dependencies:
+    - globals

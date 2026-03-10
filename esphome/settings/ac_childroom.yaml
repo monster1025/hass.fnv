@@ -1,0 +1,67 @@
+substitutions:
+# Уникальное имя этой конфигурации, стоит использовать только латинские буквы и цифры, никаких пробелов или
+# спецсимволов, например, "tclac". Если будет несколько модулей кондиционера, то device_name надо изменить,
+# например, добавляя цифры: tclac1, tclac2, tclac3...
+  device_name: ac_childroom
+# Человеческое имя для кондиционера, для интерфейса:
+  humanly_name: "Кондиционер Детская"
+# Настройки подключения к WiFI, данные могут храниться в файле "secret" в ESPHome, если нет- редактируем:
+# Имя точки доступа WiFI:
+  wifi_ssid: !secret wifi_24_name
+# Пароль точки доступа WiFI:
+  wifi_password: !secret wifi_24_pass
+# Пароль для точки доступа для восстановления, имя точки доступа будет: "{device_name} Fallback Hotspot"
+  recovery_pass: !secret esphome_captive_pass
+# Пароль для обновления по воздуху, генерируется один раз и потом используется всегда на автомате:
+  ota_pass: !secret api_encryption_key
+# Ключ подключения к Home Assistant API, новый ключ можно получить здесь: https://esphome.io/components/api.html:
+  api_key: !secret api_encryption_key
+# Выводы модуля, к которым подключен UART:
+  uart_rx: GPIO3
+  uart_tx: GPIO1
+# Выводы модуля для подключения сигнальных светодиодов, для работы надо раскомментировать "leds" в "packages"
+# иначе работать не будет совсем и можно писать сюда вообще что угодною. Для тех, кто просил их удалить.
+  receive_led: GPIO6
+  transmit_led: GPIO4
+  device_host: ac-childroom.lan
+  
+# Подгружаемые файлы- загружаются и обновляются автоматически из интернета, раскомментировать нужные
+# Описание опций:
+# - packages/leds.yaml - светодиоды для индикации приема/передачи, пины указываются в receive_led / transmit_led
+#
+# Выравнивать раскомментированные строки обязательно по указанной позиции!
+packages:
+  remote_package:
+    url: https://github.com/I-am-nightingale/tclac.git
+    ref: master
+    files:
+      - packages/core.yaml # Ядро всего сущего
+      # - packages/leds.yaml
+    refresh: 30s
+
+esp8266:
+  board: d1_mini
+
+wifi:
+  use_address: ${device_host}
+
+web_server:
+  port: 80
+  auth:
+    username: admin
+    password: superLongP4ss
+
+sensor:
+  - platform: template
+    name: "Текущая точная температура"
+    id: current_temperature_precise
+    unit_of_measurement: "°C"
+    accuracy_decimals: 2 # Настраиваем точность до сотых
+    update_interval: 30s # Интервал обновления, можно настроить по необходимости
+    lambda: |-
+      // Возвращаем значение переменной current_temperature из компонента tclacClimate
+      return id(${device_name}climate).current_temperature;
+
+button:
+  - platform: restart
+    name: "Restart"

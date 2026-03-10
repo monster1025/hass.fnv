@@ -1,0 +1,11 @@
+#################################
+#        HOME PRESENSE          #
+#################################
+alarm_panel:
+  module: alarm_panel
+  class: AlarmPanelBySensor
+  sensor: sensor.presence_home
+  ha_panel: alarm_control_panel.ha_alarm
+  constraint: input_boolean.presence_control
+  global_dependencies:
+    - globals

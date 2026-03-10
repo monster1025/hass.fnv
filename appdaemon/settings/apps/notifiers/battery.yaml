@@ -1,0 +1,12 @@
+#################################
+#  SENSOR BATTERY LOW REMINDER  #
+#################################
+sensor_battery_low_report:
+  class: Battery
+  module: battery
+  constraint: input_boolean.battery_report
+  always_send: 0
+  threshold: 10
+  notify: telegram
+  global_dependencies:
+    - globals

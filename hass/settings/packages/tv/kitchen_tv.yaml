@@ -1,0 +1,22 @@
+# Either put this here or in your automations.yaml
+rest_command:
+  kitchen_tv_wol:
+    url: "http://192.168.1.1/wol_action.asp?dstmac=B4:B2:91:C0:A7:FD"
+    method: get
+    content_type: "application/json"
+    username: !secret router_username
+    password: !secret router_password
+
+automation:
+  - id: 'kitchentv_wakeup'
+    alias: "Wake up kitchen tv on turn_on"
+    trigger:
+      - platform: webostv.turn_on
+        entity_id: media_player.kitchen_tv
+    action:
+      - service: rest_command.kitchen_tv_wol
+      - delay: 10
+      - service: media_player.select_source
+        data:
+          entity_id: media_player.kitchen_tv
+          source: Wink

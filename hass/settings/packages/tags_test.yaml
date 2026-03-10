@@ -1,0 +1,59 @@
+sensor:
+# Old phone - 75f45ca5a0b55b563f827339c91da5be
+  - platform: mqtt_room
+    device_id: "irk:f8cfda8942512292fd767127fd5028c1"
+    name: 'tag_danil_iphone'
+    state_topic: 'espresense/devices/irk:f8cfda8942512292fd767127fd5028c1'
+    timeout: 30
+    away_timeout: 300
+
+  - platform: mqtt_room
+    device_id: "irk:23c0abe5a5167d5f3a9fed8f5811e2cb"
+    name: 'tag_svetlana_iphone'
+    state_topic: 'espresense/devices/irk:23c0abe5a5167d5f3a9fed8f5811e2cb'
+    timeout: 30
+    away_timeout: 300
+
+  - platform: mqtt_room
+    device_id: "irk:ee497d98b502c47ec3f631336ec37eed"
+    name: 'tag_mama_iphone'
+    state_topic: 'espresense/devices/irk:ee497d98b502c47ec3f631336ec37eed'
+    timeout: 30
+    away_timeout: 300
+
+
+homeassistant:
+  customize:
+    sensor.tag_danil_iphone:
+      friendly_name: Данил (телефон)
+    sensor.tag_svetlana_iphone:
+      friendly_name: Света (телефон)
+    sensor.tag_mama_iphone:
+      friendly_name: Мама (телефон)
+
+automation:
+  alias: "Presence: Beacons"
+  description: ""
+  trigger:
+    - platform: state
+      entity_id:
+        - sensor.tag_danil_iphone
+        - sensor.tag_svetlana_iphone
+        - sensor.tag_mama_iphone
+      enabled: true
+  condition: []
+  action:
+    - service: device_tracker.see
+      data:
+        dev_id: "{{ trigger.entity_id.split('.')[1] }}"
+        location_name: |
+          {% set locations = ['mainroom', 'kitchen'] %}
+          {% if trigger.to_state.state in locations  %}
+            home
+          {% elif trigger.to_state.state not in locations %}
+            not_home
+          {% else %}
+             unknown
+          {% endif %}
+        source_type: router
+  mode: restart

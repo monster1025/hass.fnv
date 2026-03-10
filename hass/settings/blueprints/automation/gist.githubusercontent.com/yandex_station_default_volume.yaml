@@ -1,0 +1,68 @@
+blueprint:
+  name: Громкость станции по умолчанию
+  description: Громкость станции по умолчанию
+  domain: automation
+  input:
+    yandex_station:
+      name: Яндекс станция
+      selector:
+        entity:
+          domain:
+          - media_player
+          multiple: false
+    number_volume:
+      name: Громкость по умолчанию (от 1 до 10)
+      selector:
+        number:
+          min: 1.0
+          max: 10.0
+          step: 1.0
+          mode: slider
+      default: 4
+  source_url: https://gist.githubusercontent.com/kai-zer-ru/b790de73330ac58068e12b61e7c1cd0a/raw/78113275ea0a08c43fb5cca947341991ccb503b2/yandex_station_default_volume.yaml
+mode: restart
+max_exceeded: silent
+variables:
+  yandex_station: !input yandex_station
+  number_volume: !input number_volume
+  number_volume_percent: '{{ number_volume | int / 10 }}'
+trigger:
+- platform: state
+  entity_id: !input yandex_station
+  to: paused
+  for:
+    hours: 0
+    minutes: 5
+    seconds: 0
+- platform: state
+  entity_id: !input yandex_station
+  to: standby
+  for:
+    hours: 0
+    minutes: 5
+    seconds: 0
+- platform: state
+  entity_id: !input yandex_station
+  to: 'off'
+  for:
+    hours: 0
+    minutes: 5
+    seconds: 0
+conditions:
+- condition: not
+  conditions:
+  - condition: state
+    entity_id: !input yandex_station
+    state: playing
+action:
+- if:
+  - condition: template
+    value_template: '{{ state_attr(yandex_station, "volume_level")|round(1) != number_volume_percent
+      }}'
+  then:
+  - action: media_player.volume_set
+    metadata: {}
+    data:
+      volume_level: '{{ number_volume_percent }}'
+    target:
+      entity_id: !input yandex_station

@@ -1,0 +1,190 @@
+sensor: []
+substitutions:
+  board_name: Coffee Philips 5400
+  device_name: coffee-philips-5400
+
+esphome:
+  name: ${device_name}
+  friendly_name: ${board_name}
+  comment: ${board_name}
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+# Enable logging
+#Журналирование
+logger:
+  level: INFO #NONE
+  baud_rate: 0
+
+# Enable Home Assistant API
+api:
+
+web_server:
+  port: 80
+
+ota:
+  platform: esphome
+  password: "S/6VwLrSJ+vRfPKWYzbg+iasPO6h3sXm3jY9Ko1YCOo="
+
+#Учетные данные Wi-Fi для подключения платы к домашней сети
+wifi:
+  ssid: "MonsterFNV"
+  password: "7065485qwe"
+  use_address: ${device_name}.lan
+
+#Если не будет связи с WiFi, то поднимется точка доступа
+  ap:
+    ssid: ESP SmartCoffeePhilips
+    password: ap_esp_password
+
+uart:
+#UART подключение к панели управления. Считываем данные которые приходят от материнской плате в панель управления
+ - id: uart_display
+   rx_pin: GPIO16 #Считываем данные с панели управления
+   tx_pin: GPIO17 #Посылаем данные в панель управления
+   baud_rate: 115200
+   stop_bits: 1
+   data_bits: 8
+   parity: NONE
+   rx_buffer_size: 256
+
+ - id: uart_mainboard
+   rx_pin: GPIO14 #Считываем данные с материнской платы
+   tx_pin: GPIO5 #Посылаем данные в материнскую плату
+   baud_rate: 115200
+   stop_bits: 1
+   data_bits: 8
+   parity: NONE
+   rx_buffer_size: 256
+
+external_components:
+  - source:
+      type: local
+      path: ./components
+
+saeco_series_6000:
+  id: saeco_series_6000_component
+  uart_display: uart_display
+  uart_mainboard: uart_mainboard
+  debug: true
+  state_sensor:
+    name: Work State
+    id: idControlSensor
+    internal: True #Скрыть - True \показать - False
+    on_value:
+      then:
+      - lambda: |-
+          //Статус состояния кофемашины, включена или выключена
+          if(x==2){
+            id(idPowerStatus).publish_state(false);
+          } else if(id(idPowerStatus).state==false){
+            id(idPowerStatus).publish_state(true);
+          }
+
+          //AA:AA:AA:B0 "Системные сенсоры"
+          if(x==21){
+           id(idStatus).publish_state("Выберите напиток");
+           id(idWater).publish_state("Вода есть");
+           id(idPallet).publish_state("Вставлен");
+           id(idGrainTray).publish_state("Зерна есть");
+           id(idCoffeeGroundsContainer).publish_state("Пустой");
+          }
+
+          //AA:AA:AA:B0 "Статусы"
+          else if(x==1){id(idStatus).publish_state("Что-то (07 01 00)");}
+          else if(x==2){id(idStatus).publish_state("Выключено");}
+          else if(x==3){id(idStatus).publish_state("Наливаем молоко");}
+          else if(x==4){id(idStatus).publish_state("Наливаем кофе");}
+          else if(x==5){id(idStatus).publish_state("Предварительное дозирование");}
+          else if(x==6){id(idStatus).publish_state("Создание пара для молока");}
+          else if(x==7){id(idStatus).publish_state("Заварочный узел в положение заваривания");}
+          else if(x==8){id(idStatus).publish_state("Наслаждайтесь");}
+          else if(x==9){id(idStatus).publish_state("Нагрев воды");}
+          else if(x==10){id(idStatus).publish_state("Перемалываем зерна");}
+          else if(x==11){id(idStatus).publish_state("Промывка");}
+          else if(x==12){id(idGrainTray).publish_state("Зерна закончились");}
+          else if(x==13){id(idStatus).publish_state("Что-то (07 08 14)");}
+          else if(x==14){id(idStatus).publish_state("Нагревание");}
+          else if(x==15){id(idStatus).publish_state("Наслаждайтесь");}
+          else if(x==16){id(idStatus).publish_state("Что-то (07 0C 02)");}
+          else if(x==17){id(idWater).publish_state("Вода есть");}
+          else if(x==18){id(idPallet).publish_state("Вставлен");}
+          else if(x==20){id(idCoffeeGroundsContainer).publish_state("Опорож. контейнер для коф. гущи");}
+          else if(x==22){id(idWater).publish_state("Воды нет");}
+          else if(x==23){id(idPallet).publish_state("Извлечен");}
+          else if(x==24){id(idPallet).publish_state("Очистка от накипи. Шаг 1");}
+          else if(x==25){id(idPallet).publish_state("Очистка от накипи. Шаг 2");}
+          
+
+          //AA:AA:AA:B5 "Error Code"
+          else if(x==30){id(idErrorCode).publish_state("00");}
+          else if(x==31){id(idErrorCode).publish_state("0B");}
+          else if(x==32){id(idErrorCode).publish_state("E6");}
+          else if(x==33){id(idErrorCode).publish_state("80");}
+          else if(x==34){id(idErrorCode).publish_state("CB");}
+          else if(x==35){id(idErrorCode).publish_state("FF");}
+          else if(x==36){id(idErrorCode).publish_state("A0");}
+
+#####################################################################################
+################################## Бинарный сенсор ##################################
+#Статус кофемашины: включена или выключена
+binary_sensor:
+  - platform: template
+    name: "Power Status"
+    id: idPowerStatus
+    icon: mdi:power
+
+#####################################################################################
+################################### Текстовый сенсор ################################
+
+text_sensor:
+  - platform: template
+    name: "Status"
+    id: idStatus
+    icon: mdi:coffee-to-go
+    update_interval: never
+  - platform: template
+    name: "Water"
+    id: idWater
+    icon: mdi:cup-water
+    update_interval: never
+  - platform: template
+    name: "Coffee Pallet"
+    id: idPallet
+    icon: mdi:spirit-level
+    update_interval: never
+  - platform: template
+    name: "Grain Tray"
+    id: idGrainTray
+    icon: mdi:grain
+    update_interval: never
+  - platform: template
+    name: "Coffee Grounds Container"
+    id: idCoffeeGroundsContainer
+    icon: mdi:train-car-centerbeam-full
+    update_interval: never
+  - platform: template
+    name: "Error Code"
+    id: idErrorCode
+    icon: mdi:alert-circle-outline
+    update_interval: never
+
+button:
+  - platform: template
+    name: "Американо"
+    on_press:
+      then:
+        - lambda: |-
+            id(saeco_series_6000_component)->send_packets_to_mainboard(
+              std::vector<std::string>{
+                "AA AA AA 93 0E 01 01 8B BD 33 EA 55",
+                "AA AA AA 90 0F 0A 00 02 00 03 02 00 B4 00 00 00 67 48 E4 4B 55",
+                "AA AA AA 91 10 01 03 56 9A 8C B8 55"
+              }, 50);
+
+#[20:45:34][I][saeco_series_6000:079]: Packet from Display: AA AA AA 93 0A 01 01 57 15 3A ED 55
+#[20:45:34][I][saeco_series_6000:079]: Packet from Display: AA AA AA 90 0B 0A 05 03 00 02 00 00 64 00 00 00 39 BF 5B 74 55
+#[20:45:35][I][saeco_series_6000:079]: Packet from Display: AA AA AA 91 0C 01 03 42 C0 B0 AD 55"

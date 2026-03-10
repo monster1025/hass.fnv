@@ -1,0 +1,17 @@
+sensor:
+  - platform: mqtt_room
+    device_id: !secret tag_danil_pocket
+    name: tag_danil_pocket
+    state_topic: home/presence
+    timeout: 15
+    away_timeout: 60
+
+input_boolean:
+  tag_danil_pocket:
+    name: Данил (Кошелек)
+    initial: on
+
+homeassistant:
+  customize:
+    sensor.tag_danil_pocket:
+      friendly_name: Данил (Кошелек)

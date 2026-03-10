@@ -1,0 +1,7 @@
+light_balcony:
+  module: light_balcony
+  class: BalconyLightControl
+  light: light.light_balcony_spotlight
+  door_sensor: binary_sensor.door_balcony_contact
+  lux_sensor: sensor.brightness_balcony_illuminance
+  lux_min: 150

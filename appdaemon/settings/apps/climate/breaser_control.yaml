@@ -1,0 +1,14 @@
+breaser_control:
+  module: breaser_control
+  class: BreaserControl
+  on_time: "09:00:00"
+  off_time: "22:00:00"
+  entity: fan.ventiliatsionnaia_sistema
+  ha_panel: alarm_control_panel.ha_alarm
+  co2_sensor: sensor.co2_bedroom_co2
+  heat_switch: switch.ventiliatsionnaia_sistema_auxiliary_heat
+  constraint: input_boolean.vent_control
+  constraint_heat: input_boolean.vent_control_heat
+  global_dependencies:
+    - globals
+  

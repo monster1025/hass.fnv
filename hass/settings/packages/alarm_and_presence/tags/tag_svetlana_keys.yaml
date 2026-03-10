@@ -1,0 +1,17 @@
+sensor:
+  - platform: mqtt_room
+    device_id: !secret tag_svetlana_keys
+    name: tag_svetlana_keys
+    state_topic: home/presence
+    timeout: 15
+    away_timeout: 60
+
+input_boolean:
+  tag_svetlana_keys:
+    name: Света (Ключи)
+    initial: on
+
+homeassistant:
+  customize:
+    sensor.tag_svetlana_keys:
+      friendly_name: Света (Ключи)

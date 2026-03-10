@@ -1,0 +1,88 @@
+#===============================================================================
+# Контроллер кондиционера в гостиной
+# Wemos D1 mini
+#===============================================================================
+substitutions:
+  node_name: ac_kitchen # Use a unique name.
+  hostname: ac-kitchen.lan
+  friendly_node_name: "Кондиционер Кухня"
+
+#===============================================================================
+# Общий конфиг
+#===============================================================================
+esphome:
+  name: ${node_name}
+  friendly_name: ${friendly_node_name}
+
+esp8266:
+  board: esp12e
+
+web_server:
+  port: 80
+  auth:
+    username: admin
+    password: superLongP4ss
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: !secret api_encryption_key
+
+ota:
+  - platform: esphome
+    password: !secret api_encryption_key
+
+wifi:
+  ssid: !secret wifi_24_name
+  password: !secret wifi_24_pass
+  use_address: 192.168.1.127 #${hostname}
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "${node_name} Fallback Hotspot"
+    password: !secret esphome_captive_pass
+
+captive_portal:
+
+# Enable logging
+logger:
+  baud_rate: 0 # disable LOG output on UART as UART is used for Sinclair AC unit
+#  level: VERBOSE
+
+uart:
+  tx_pin: 1
+  rx_pin: 3
+  baud_rate: 4800
+  parity: EVEN
+
+time:
+  - platform: sntp
+
+external_components:
+  - source: github://gekkehenkie11/esphome_gree_ac
+    components: [sinclair_ac]
+    refresh: 0s
+
+climate:
+  - platform: sinclair_ac
+    name: ${node_name}
+    horizontal_swing_select:
+      name: ${node_name} Horizontal Swing Mode
+    vertical_swing_select:
+      name: ${node_name} Vertical Swing Mode
+    display_select:
+      name: ${node_name} Display Mode
+    display_unit_select:
+      name: ${node_name} Display Unit
+    plasma_switch:
+      name: ${node_name} Plasma
+    sleep_switch:
+      name: ${node_name} Sleep
+    xfan_switch:
+      name: ${node_name} X-fan
+    save_switch:
+      name: ${node_name} Save/8 Heat  
+
+button:
+  - platform: restart
+    name: "Restart"

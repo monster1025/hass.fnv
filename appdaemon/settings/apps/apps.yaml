@@ -1,0 +1,29 @@
+#################################################################
+## Global
+#################################################################
+global_modules:
+  - globals
+  - automation
+  - notify
+
+automation:
+  class: Automation
+  module: automation
+#################################
+#             CUBE              #
+#################################
+# cube:
+#   module: cube
+#   class: Cube  
+
+#################################
+#           NARODMON            #
+#################################
+# narodmon_sensor:
+#   module: narodmon_sensor
+#   class: NarodmonSensor
+#   entity: sensor.lux_outside
+#   friendly_name: 'Освещенность (Улица)'
+#   user: 1089
+#   sensorid: 7574
+#   interval: 120

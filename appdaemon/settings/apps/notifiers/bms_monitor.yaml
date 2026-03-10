@@ -1,0 +1,14 @@
+bms_monitor:
+  module: bms_monitor
+  class: BMSMonitor
+  # Telegram настройки
+  notification_target: telegram_monster
+  # Сущности из вашей карточки
+  power_sensor: sensor.jk_bms_jk_bms_power
+  soc_sensor: sensor.jk_bms_jk_bms_state_of_charge
+  current_sensor: sensor.jk_bms_jk_bms_current
+  voltage_sensor: sensor.jk_bms_jk_bms_total_voltage
+  # Порог мощности (Вт) для определения режима (чтобы избежать шумов)
+  power_threshold: 5 
+  # Интервал оповещений при разрядке (секунды)
+  discharge_interval: 300 

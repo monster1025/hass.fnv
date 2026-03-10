@@ -1,0 +1,17 @@
+climate_control:
+  module: climate_control
+  class: ClimateControl
+  thermostat: climate.bedroom_climate
+  ac: climate.ac_bedroom
+  radiators:
+    - climate.radiator_bedroom
+    - climate.radiator_bedroom_balcony
+  radiator_enabled: input_boolean.radiator_enabled
+  #presence_sensors:
+  #  - binary_sensor.presence_bedroom
+  no_presence_delay: 1800  # секунд без присутствия для отключения
+  window_sensors:
+    - binary_sensor.door_bedroom_big_window_contact
+    - binary_sensor.door_balcony_contact
+  window_open_delay: 300   # секунд открытого окна для отключения
+  alarm: alarm_control_panel.ha_alarm 

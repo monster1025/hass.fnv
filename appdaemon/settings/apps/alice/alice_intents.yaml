@@ -1,0 +1,8 @@
+#################################
+#        HOME PRESENSE          #
+#################################
+alice_intents:
+  module: alice_intents
+  class: AliceIntents
+  global_dependencies:
+    - globals

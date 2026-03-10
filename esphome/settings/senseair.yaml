@@ -1,0 +1,81 @@
+# Need to turn off logging because senseair uses uart and have conflicts with logging
+logger:
+#  baud_rate: 0
+
+esphome:
+  name: senseair
+  platform: ESP8266
+  board: d1_mini
+font:
+  - file: "OpenSans-Light.ttf"
+    id: open_sans_10
+    size: 10
+  - file: "OpenSans-Light.ttf"
+    id: open_sans_14
+    size: 14
+  - file: "OpenSans-Light.ttf"
+    id: open_sans_18
+    size: 28
+    
+wifi:
+  ssid: !secret wifi_24_name
+  password: !secret wifi_24_pass
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Senseair Fallback Hotspot"
+    password: !secret esphome_captive_pass
+
+captive_portal:
+
+# Enable Home Assistant API
+api:
+  password: !secret esphome_pass
+
+ota:
+  password: !secret esphome_pass
+
+# hass sensor =)
+time:
+  - platform: homeassistant
+    id: homeassistant_time
+    timezone: Europe/Moscow
+
+sensor:
+  - platform: homeassistant
+    id: co2_mainroom_bed
+    entity_id: sensor.co2_mainroom_bed
+
+  - platform: homeassistant
+    id: temperature_outside
+    entity_id: sensor.temperature_outside
+
+i2c:
+  scl: D1
+  sda: D2
+  scan: False
+  
+# 
+display:
+  - platform: ssd1306_i2c
+    model: "SSD1306 128x64"
+    address: 0x3C
+    lambda: |-
+      it.strftime(90, 0, id(open_sans_14), "%H:%M", id(homeassistant_time).now());
+      
+      if (id(temperature_outside).has_state()) {
+        it.printf(0, 0, id(open_sans_14), TextAlign::TOP_LEFT , "%.1f°C", id(temperature_outside).state);
+      }
+
+      it.printf(0, 20, id(open_sans_14), TextAlign::TOP_LEFT , "CO");
+      it.printf(22, 27, id(open_sans_10), TextAlign::TOP_LEFT , "2");
+
+      int value = 0;
+      if (id(co2_mainroom_bed).has_state() && !isnan(id(co2_mainroom_bed).state)) {
+        it.printf(35, 18, id(open_sans_18), TextAlign::TOP_LEFT , "%.0f", id(co2_mainroom_bed).state);
+        
+        value = (id(co2_mainroom_bed).state*100/2500)*128/100;
+      }
+
+      it.rectangle(0, 57, 127, 7);
+      it.filled_rectangle(0, 57, value, 7);

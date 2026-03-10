@@ -1,0 +1,9 @@
+#################################
+#        HOME PRESENSE          #
+#################################
+presence_action:
+  module: presence_action
+  class: PresenceAction
+  alice: media_player.yandex_station_m00r46000m53db
+  global_dependencies:
+    - globals
