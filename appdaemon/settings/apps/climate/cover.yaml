@@ -24,6 +24,13 @@ cover_action:
   open_at_sunrise:
     - cover.curtain_kitchen
     - cover.curtain_mainroom
+  cover_door_sensors:
+    cover.curtain_bedroom:
+      - binary_sensor.door_bedroom_big_window_contact
+    cover.curtain_bedroom_balcony:
+      - binary_sensor.door_balcony_contact
+    cover.curtain_bedroom_bobbinet_balcony:
+      - binary_sensor.door_balcony_contact
   global_dependencies:
     - globals
 

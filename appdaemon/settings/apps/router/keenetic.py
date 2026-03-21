@@ -63,8 +63,9 @@ class TelegramInternetControl(hass.Hass):
         text = event_args['text']
         room = event_args['room']
         alice = event_args['entity_id']
-        if text == self.block_command:
+        if text.lower() == self.block_command.lower():
             self.handle_block_command('Monster1025')
+            self.say(alice, 'Интернет в детской отключен.')
 
     def say(self, entity_id, command):
       self.log('command = {}'.format(command))

@@ -61,17 +61,17 @@ class BreaserControl(hass.Hass):
     elif not self.time_is_between(self.datetime(), self.args["on_time"], self.args["off_time"]):
       self.set_mode_by_co2(co2_level, True)
 
-def set_mode_by_co2(self, co2_level, is_night):
+  def set_mode_by_co2(self, co2_level, is_night):
     self.heat_mode_by_time()
     
     # === Настраиваемые коэффициенты ===
     CFG = {
         'co2_auto_threshold': 600,      # Ниже этого значения — auto_mode
-        'co2_min_control': 700,         # Начало плавного роста скорости
-        'co2_max_control': 1200,        # Максимальная скорость достигается здесь
-        'speed_min': 30,                # Мин. скорость вентиляции
+        'co2_min_control': 600,         # Начало плавного роста скорости
+        'co2_max_control': 1000,        # Максимальная скорость достигается здесь
+        'speed_min': 1,                 # Мин. скорость вентиляции
         'speed_max': 100,               # Макс. скорость вентиляции
-        'night_speed_factor': 0.75,     # Коэффициент снижения скорости ночью
+        'night_speed_factor': 0.7,      # Коэффициент снижения скорости ночью
         'transition_smoothness': 0.3,   # Плавность перехода (0-1)
     }
     
@@ -103,67 +103,11 @@ def set_mode_by_co2(self, co2_level, is_night):
     # === Плавный расчёт скорости ===
     speed = calculate_speed(co2_level, CFG, is_night)
     
-    # Определение уровня для лога
-    if co2_level < CFG['co2_min_control']:
-        level_desc = 'good'
-    elif co2_level < CFG['co2_max_control'] * 0.7:
-        level_desc = 'moderate'
-    elif co2_level < CFG['co2_max_control']:
-        level_desc = 'high'
-    else:
-        level_desc = 'extremely high'
-    
     period = 'Night' if is_night else 'Day'
-    self.log('{}, CO2 is {}: {}. Set speed to {}.'.format(
-        period, level_desc, co2_level, speed))
+    self.log('{}, CO2 is {}. Set speed to {}.'.format(
+        period, co2_level, speed))
     
     self.set_speed(speed)
-
-  # def set_mode_by_co2(self, co2_level, is_night):
-  #   self.heat_mode_by_time()
-  #   if co2_level < 500:
-  #     self.log('CO2 is fine: {}. Set auto mode.'.format(co2_level))
-  #     self.auto_mode()
-  #   if co2_level > 500 and co2_level < 800:
-  #     if is_night:
-  #       self.log('CO2 is normal: {}. Set night mode'.format(co2_level))
-  #       self.night_mode()
-  #     else:
-  #       self.log('CO2 is normal: {}. Set auto mode.'.format(co2_level))
-  #       self.auto_mode()
-  #     return
-  #   if co2_level > 800 and co2_level < 900:
-  #     if is_night:
-  #       self.log('Night, CO2 is high: {}. Set speed to 45.'.format(co2_level))
-  #       self.set_speed(45)
-  #     else:
-  #       self.log('Day, CO2 is high: {}. Set speed to 65.'.format(co2_level))
-  #       self.set_speed(65)
-  #     return
-  #   if co2_level > 900 and co2_level < 1000:
-  #     if is_night:
-  #       self.log('Night, CO2 is high: {}. Set speed to 65.'.format(co2_level))
-  #       self.set_speed(65)
-  #     else:
-  #       self.log('Day, CO2 is high: {}. Set speed to 80.'.format(co2_level))
-  #       self.set_speed(80)
-  #     return
-  #   if co2_level > 1000 and co2_level < 1200:
-  #     if is_night:
-  #       self.log('Night, CO2 is extremely high: {}. Set speed to 80.'.format(co2_level))
-  #       self.set_speed(80)
-  #     else:
-  #       self.log('Day, CO2 is extremely high: {}. Set speed to 100.'.format(co2_level))
-  #       self.set_speed(100)
-  #     return
-  #   if co2_level > 1200:
-  #     if is_night:
-  #       self.log('Night, CO2 is extremely high: {}. Set speed to 100.'.format(co2_level))
-  #       self.set_speed(100)
-  #     else:
-  #       self.log('Day, CO2 is extremely high: {}. Set speed to 100.'.format(co2_level))
-  #       self.set_speed(100)
-  #     return
 
   def set_speed(self, speed):
     if 'constraint' in self.args and not self.constrain_input_boolean(self.args['constraint']):

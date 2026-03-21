@@ -1,0 +1,22 @@
+template:
+  - sensor:
+      - unit_of_measurement: kWh
+        state: "{{ states('sensor.power_total') | float - 7072.7 | round(2) }}"
+        name: power_main_total
+        # 7072.7 - разница показаний.
+
+      - unit_of_measurement: ₽
+        state: "{{ states('sensor.power_monthly_t1') | float * 8.23 | round(2) }}"
+        name: power_monthly_cost_t1
+
+      - unit_of_measurement: ₽
+        state: "{{ states('sensor.power_monthly_t2') | float * 2.62 | round(2) }}"
+        name: power_monthly_cost_t2
+
+      - unit_of_measurement: ₽
+        state: "{{ states('sensor.power_monthly_t3') | float * 5.66 | round(2) }}"
+        name: power_monthly_cost_t3
+
+      - unit_of_measurement: ₽
+        state: "{{ (states('sensor.power_monthly_cost_t1') | float) + (states('sensor.power_monthly_cost_t2') | float) + (states('sensor.power_monthly_cost_t3') | float) | round(2) }}"
+        name: power_monthly_cost_total

@@ -16,6 +16,7 @@ class CoverByPresence(hass.Hass):
     if 'covers' not in self.args:
       self.error("Please provide covers in config!")
       return
+    self.log("Initializing CoverByPresence with covers: {}".format(self.args.get("covers")))
     self.listen_event(self.away_mode, "away_mode")
     self.listen_event(self.return_home_mode, "return_home_mode")
 
@@ -23,6 +24,27 @@ class CoverByPresence(hass.Hass):
     self.run_at_sunrise(self.run_at_sunrise_func, offset=sunrise_offset)
     sunset_offset = int(self.args.get('sunset_offset', '0'))
     self.run_at_sunset(self.run_at_sunset_func, offset=sunset_offset)
+
+    # Prepare cover door sensors mapping (optional)
+    self.cover_door_sensors = self.args.get("cover_door_sensors", {})
+    self.log("Cover door sensors mapping: {}".format(self.cover_door_sensors))
+
+  def is_cover_blocked(self, entity_id):
+    """
+    Returns True if the cover has at least one associated door sensor
+    that is currently in 'on' (open) state.
+    """
+    sensors = self.cover_door_sensors.get(entity_id, [])
+    if not sensors:
+      self.log("No door sensors configured for cover {}, treat as not blocked".format(entity_id))
+      return False
+    for sensor in sensors:
+      state = self.get_state(sensor)
+      self.log("Door sensor {} for cover {} state: {}".format(sensor, entity_id, state))
+      if state == "on":
+        self.log("Skip moving cover {} because door sensor {} is open".format(entity_id, sensor))
+        return True
+    return False
 
   def run_at_sunrise_func(self, kwargs):
     if 'constraint' in self.args and not self.constrain_input_boolean(self.args['constraint']):
@@ -38,6 +60,8 @@ class CoverByPresence(hass.Hass):
       return
 
     for entity_id in self.args["open_at_sunrise"]:
+      if self.is_cover_blocked(entity_id):
+        continue
       self.log('opening cover {} at sunrise'.format(entity_id))
       self.turn_on_custom(entity_id)
 
@@ -49,6 +73,8 @@ class CoverByPresence(hass.Hass):
       self.log('no covers to close at sunset.')
       return
     for entity_id in self.args["close_at_sunset"]:
+      if self.is_cover_blocked(entity_id):
+        continue
       self.log('closing cover {} at sunset'.format(entity_id))
       self.turn_off_custom(entity_id)
   
@@ -57,6 +83,8 @@ class CoverByPresence(hass.Hass):
       self.log('execution is disabled.')
       return
     for entity_id in self.args["covers"]:
+      if self.is_cover_blocked(entity_id):
+        continue
       self.turn_off_custom(entity_id)
 
   def return_home_mode(self, event_id, event_args, kwargs):
@@ -68,6 +96,8 @@ class CoverByPresence(hass.Hass):
       return
     entities = self.args["covers"]
     for entity_id in entities:
+      if self.is_cover_blocked(entity_id):
+        continue
       self.turn_on_custom(entity_id)
 
   def turn_on_custom(self, entity_id):

@@ -97,27 +97,6 @@ modbus:
       scale: 0.01
       unit_of_measurement: 'Hz'
 
-sensor:
-  - platform: template
-    sensors:
-      power_main_total:
-        unit_of_measurement: 'kWh'
-        value_template: "{{ states('sensor.power_total') | float - 7072.7 | round(2) }}"
-        #7072.7 - разница показаний.
-
-      power_monthly_cost_t1:
-        unit_of_measurement: '₽'
-        value_template: "{{ states('sensor.power_monthly_t1') | float * 8.23 | round(2) }}"
-      power_monthly_cost_t2:
-        unit_of_measurement: '₽'
-        value_template: "{{ states('sensor.power_monthly_t2') | float * 2.62 | round(2) }}"
-      power_monthly_cost_t3:
-        unit_of_measurement: '₽'
-        value_template: "{{ states('sensor.power_monthly_t3') | float * 5.66 | round(2) }}"
-      power_monthly_cost_total:
-        unit_of_measurement: '₽'
-        value_template: "{{ states('sensor.power_monthly_cost_t1') | float + states('sensor.power_monthly_cost_t2') | float + states('sensor.power_monthly_cost_t3')  | float | round(2) }}"
-
 utility_meter:
   power_hourly:
     source: sensor.power_total
