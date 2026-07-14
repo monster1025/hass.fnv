@@ -133,19 +133,18 @@ services:
       options:
         max-size: 50m  
 
-  # DISABLED 2026-07-14: migrated to neptun_smart_local HA integration, see neptun-migration-backup-*
-  #   neptun2mqtt:
-  #     build:
-  #       context: ./neptun2mqtt/docker
-  #       dockerfile: Dockerfile
-  #     restart: always
-  #     container_name: neptun2mqtt
-  #     env_file: ./neptun2mqtt/settings/neptun.env
-  #     logging:
-  #       driver: json-file
-  #       options:
-  #           max-size: "10m"
-  #           max-file: "5"
+  neptun2mqtt:
+    build:
+      context: ./neptun2mqtt/docker
+      dockerfile: Dockerfile
+    restart: always
+    container_name: neptun2mqtt
+    env_file: ./neptun2mqtt/settings/neptun.env
+    logging:
+      driver: json-file
+      options:
+          max-size: "10m"
+          max-file: "5"
 
   nginx:
     image: nginx

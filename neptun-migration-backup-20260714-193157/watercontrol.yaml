@@ -1,9 +1,35 @@
 #################################################
 #                WATER                          #
 #################################################
-# NOTE 2026-07-14: MQTT-мост neptun2mqtt отключён, счётчики/клапан
-# переехали на интеграцию neptun_smart_local (entity_id sensor.counter_cold/hot
-# и switch.water_valve переименованы в registry, история сохранена).
+mqtt:
+  sensor:
+    - unique_id: counter_cold
+      state_topic: 'home/watercontrol/counter2_1'
+      name: 'counter_cold'
+      value_template: '{{ (value | float ) }}'
+      unit_of_measurement: 'm³'
+      device_class: water
+      state_class: total_increasing
+    - unique_id: counter_hot
+      state_topic: 'home/watercontrol/counter2_2'
+      name: 'counter_hot'
+      value_template: '{{ (value | float ) }}'
+      unit_of_measurement: 'm³'
+      device_class: water
+      state_class: total_increasing
+    - unique_id: uptime_watercontrol
+      state_topic: 'home/watercontrol/$uptime'
+      name: 'uptime_watercontrol'
+      value_template: '{{ value | int }}'
+  switch:
+    - unique_id: water_valve
+      name: water_valve
+      state_topic: "home/watercontrol/valves"
+      command_topic: "home/watercontrol/valves/set"
+      payload_on: true
+      payload_off: false
+      optimistic: false
+      retain: false
 
 template:
   sensor:
@@ -36,4 +62,4 @@ homeassistant:
     sensor.counter_hot_outer:
       friendly_name: "Счетчик Внешний Горячая"      
     sensor.counter_cold_outer:
-      friendly_name: "Счетчик Внешний Холодная"
+      friendly_name: "Счетчик Внешний Холодная"      

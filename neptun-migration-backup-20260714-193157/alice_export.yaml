@@ -52,7 +52,7 @@ yandex_smart_home:
       - switch.light_mainroom_mainlamp
       - switch.light_mainroom_spotlights
       - switch.shower_mirror
-      - switch.water_valve
+      - switch.watercontrol_valves
       - vacuum.dreame_p2027_6b1e_robot_cleaner
       - light.plug_yolka
     include_entity_globs:

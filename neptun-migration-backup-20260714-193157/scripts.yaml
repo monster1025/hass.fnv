@@ -4,7 +4,7 @@ new_script:
   - service: switch.turn_off
     data: {}
     target:
-      entity_id: switch.water_valve
+      entity_id: switch.watercontrol_valves
   - service: climate.set_preset_mode
     data:
       preset_mode: away
@@ -45,7 +45,7 @@ new_script:
   - service: switch.turn_on
     data: {}
     target:
-      entity_id: switch.water_valve
+      entity_id: switch.watercontrol_valves
   - service: climate.set_preset_mode
     data:
       preset_mode: manual

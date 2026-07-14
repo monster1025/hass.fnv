@@ -52,9 +52,7 @@ class WaterLeak(hass.Hass):
     #close water valve
     self.turn_off(self.args['valve'])
     ## to ensure that water is closed. It is important!!!
-    ## (was a direct MQTT publish to the retired neptun2mqtt bridge; now just
-    ## re-issue turn_off as a best-effort duplicate call)
-    self.turn_off(self.args['valve'])
+    self.call_service("mqtt/publish", topic = 'home/watercontrol/bath/valve/set', payload = 'close')
 
     message = "ВНИМАНИЕ! В ваше отстутствие сработал датчик протечки воды ({})!!! Выключаю подачу воды.".format(self.friendly_name(entity_id))
     globals.send_telegram(self, message, target = self.args['notify'])

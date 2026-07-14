@@ -4,7 +4,7 @@
 water_action:
   module: water_action
   class: WaterValveControl
-  water_valve: switch.water_valve
+  water_valve: switch.watercontrol_valves
   notify: telegram
   constraint: input_boolean.water_control
   water_devices:
