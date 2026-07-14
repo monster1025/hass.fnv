@@ -1,5 +1,6 @@
 import appdaemon.plugins.hass.hassapi as hass
 import datetime
+import globals
 
 #
 # App to send reports about unsuccessfull auths
@@ -24,5 +25,5 @@ class Security(hass.Hass):
 
   def state_change(self, entity, attribute, old, new, kwargs):
     notifier = self.args.get('notify', 'telegram')
-    self.notify(new, name = notifier)
+    globals.send_telegram(self, new, target = notifier)
     self.log(new)

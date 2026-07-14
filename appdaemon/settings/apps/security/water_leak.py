@@ -1,4 +1,5 @@
 import appdaemon.plugins.hass.hassapi as hass
+import globals
 
 #
 # Water leak detector
@@ -54,9 +55,9 @@ class WaterLeak(hass.Hass):
     self.call_service("mqtt/publish", topic = 'home/watercontrol/bath/valve/set', payload = 'close')
 
     message = "ВНИМАНИЕ! В ваше отстутствие сработал датчик протечки воды ({})!!! Выключаю подачу воды.".format(self.friendly_name(entity_id))
-    self.notify(message, name = self.args['notify'])
+    globals.send_telegram(self, message, target = self.args['notify'])
 
     message = "Состояние датчиков протечки:\n"
     for entity_id in self.sensors:
       message += '{} ({}) = {}\n'.format(self.friendly_name(entity_id), entity_id, self.get_state(entity_id))
-    self.notify(message, name = self.args['notify'])
+    globals.send_telegram(self, message, target = self.args['notify'])

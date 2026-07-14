@@ -9,6 +9,6 @@ water_action:
   constraint: input_boolean.water_control
   water_devices:
     - binary_sensor.washer_running # стиралка
-    - binary_sensor.hc_dishwasher_running # посудомойка
+    - binary_sensor.bosch_dishwasher_running # посудомойка
   global_dependencies:
     - globals

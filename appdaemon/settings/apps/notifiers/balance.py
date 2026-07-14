@@ -1,4 +1,5 @@
 import datetime
+import globals
 from automation import Automation, Base  # type: ignore
 
 #
@@ -21,7 +22,7 @@ class Balance(Base):
     super().initialize()
     self.check_balance({"force": 1})
     self.run_daily(self.check_balance, datetime.time(10, 0, 0))
-    
+
   def check_balance(self, kwargs):
     # if 'constraint' in self.args and not self.constrain_input_boolean(self.args['constraint']):
     #   return
@@ -61,5 +62,4 @@ class Balance(Base):
   def notify_tg(self, msg):
     if not 'notify' in self.args:
       return
-    extra_data = {'parse_mode': 'html'}
-    self.notify(msg, name = self.args['notify'], data=extra_data)
+    globals.send_telegram(self, msg, target = self.args['notify'])

@@ -1,5 +1,6 @@
 import appdaemon.plugins.hass.hassapi as hass
 import datetime
+import globals
 
 class BMSMonitor(hass.Hass):
     def initialize(self):
@@ -17,7 +18,7 @@ class BMSMonitor(hass.Hass):
         self.current_state = "IDLE" # IDLE, CHARGING, DISCHARGING
         self.timer_handle = None
         self.was_charging = False
-        
+
         # Переменная для хранения времени начала отключения
         self.outage_start_time = None
 
@@ -45,15 +46,15 @@ class BMSMonitor(hass.Hass):
         # Логика переходов состояний
         if self.current_state != new_state:
             self.log(f"Смена состояния BMS: {self.current_state} -> {new_state}")
-            
+
             # 1. Переход в разрядку (Отключили питание)
             if new_state == "DISCHARGING" and self.current_state != "DISCHARGING":
                 # Фиксируем время начала отключения
                 self.outage_start_time = datetime.datetime.now()
-                
+
                 self.send_telegram("⚠️ <b>ВНИМАНИЕ: Отключено питание!</b>\nБатарея перешла в режим разрядки.", "html")
                 self.start_discharge_timer()
-            
+
             # 2. Выход из разрядки (Питание восстановлено)
             # Срабатывает при переходе DISCHARGING -> IDLE или DISCHARGING -> CHARGING
             elif self.current_state == "DISCHARGING" and new_state in ("IDLE", "CHARGING"):
@@ -62,14 +63,14 @@ class BMSMonitor(hass.Hass):
                     duration = datetime.datetime.now() - self.outage_start_time
                     duration_msg = f"\n⏱ <b>Время без электричества: {self._format_timedelta(duration)}</b>"
                     self.outage_start_time = None # Сбрасываем таймер
-                
+
                 self.send_telegram(f"✅ <b>Питание восстановлено!</b>\nБатарея вышла из режима разрядки.{duration_msg}", "html")
                 self.stop_discharge_timer()
-            
+
             # 3. Переход в простой после зарядки (Зарядка окончена)
             elif new_state == "IDLE" and self.current_state == "CHARGING":
                 self.send_telegram("🔋 <b>Зарядка завершена!</b>\nБатарея полностью заряжена или нагрузка отключена.", "html")
-            
+
             # 4. Переход IDLE -> CHARGING (если не было разрядки перед этим)
             elif new_state == "CHARGING" and self.current_state == "IDLE":
                 # Можно добавить отдельное уведомление, если нужно
@@ -84,14 +85,14 @@ class BMSMonitor(hass.Hass):
             soc = float(new)
             if soc >= 100 and self.current_state == "CHARGING" and not self.was_charging:
                  # Небольшая защита от повторных уведомлений
-                 self.was_charging = True 
+                 self.was_charging = True
         except (ValueError, TypeError):
             pass
 
     def start_discharge_timer(self):
         if self.timer_handle is None:
             # Запускаем таймер: сразу первое сообщение, потом каждые N секунд
-            self.send_status_report() 
+            self.send_status_report()
             self.timer_handle = self.run_every(self.periodic_status, datetime.datetime.now(), self.interval)
             self.log("Таймер статуса разрядки запущен")
 
@@ -113,12 +114,12 @@ class BMSMonitor(hass.Hass):
         total_seconds = int(td.total_seconds())
         hours, remainder = divmod(total_seconds, 3600)
         minutes, _ = divmod(remainder, 60)
-        
+
         parts = []
         if hours > 0:
             parts.append(f"{hours} ч")
         parts.append(f"{minutes} мин")
-        
+
         return " ".join(parts)
 
     def send_status_report(self):
@@ -134,16 +135,16 @@ class BMSMonitor(hass.Hass):
             soc = round(float(soc_raw), 1) if soc_raw not in (None, 'unknown', 'unavailable') else 0
             current = round(float(current_raw), 2) if current_raw not in (None, 'unknown', 'unavailable') else 0
             voltage = round(float(voltage_raw), 2) if voltage_raw not in (None, 'unknown', 'unavailable') else 0
-            
+
             # Определяем цвет/иконку для направления тока
             direction = "🔻 Разряд" if power < 0 else "🔺 Заряд"
-            
+
             # Добавляем время без электричества, если известно
             outage_info = ""
             if self.outage_start_time:
                 duration = datetime.datetime.now() - self.outage_start_time
                 outage_info = f"\n⏳ Без света: <b>{self._format_timedelta(duration)}</b>"
-            
+
             msg = (
                 f"📊 <b>Статус батареи (JK BMS)</b>\n\n"
                 f"🔋 SOC: <b>{soc}%</b>\n"
@@ -159,7 +160,6 @@ class BMSMonitor(hass.Hass):
 
     def send_telegram(self, message, parse_mode="html"):
         try:
-            extra_data = {'parse_mode': parse_mode}
-            self.notify(message, name = self.notification_target, data=extra_data)
+            globals.send_telegram(self, message, target = self.notification_target, parse_mode = parse_mode)
         except Exception as e:
             self.log(f"Ошибка отправки Telegram: {e}")

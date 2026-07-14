@@ -5,9 +5,10 @@ dishwasher:
   class: Dishwasher
   module: dishwasher
   constraint: input_boolean.dishwasher_state_light
-  counter: counter.dishwasher_door_open_count
-  door_sensor: binary_sensor.hc_dishwasher_door
-  run_state: sensor.hc_dishwasher_state
+  counter: counter.bosch_dishwasher_door_open_count
+  door_sensor: binary_sensor.bosch_dishwasher_door
+  run_state: sensor.bosch_dishwasher_operation_state
+  state_extended: input_select.bosch_dishwasher_state_extended
   lamp: light.espresense_kitchen_led_1
   global_dependencies:
     - globals

@@ -1,6 +1,7 @@
 import appdaemon.plugins.hass.hassapi as hass
 from datetime import timedelta
 import datetime
+import globals
 
 #
 # App to send email report for devices running low on battery
@@ -24,10 +25,10 @@ class Teeth(hass.Hass):
     # Устанавливаем сброс в 10 утра
     reset_time = datetime.time(10, 0, 0)
     self.run_daily(self.reset_action, reset_time)
-    
+
     # Запускаем проверку напоминаний
     self.timer = self.run_every(self.remind_if_needed, self.datetime()+timedelta(seconds=1), self.args['remind_interval'])
-    
+
     # Слушаем изменения состояния кнопки
     self.listen_event_handle_list.append(self.listen_state(self.button_state_change, self.args['mute_button']))
 
@@ -78,5 +79,4 @@ class Teeth(hass.Hass):
       notify = self.args["notify"]
     now = datetime.datetime.now()+timedelta(hours=3)
     message="Уже {}, а ты еще не почистил зубы. Самое время =)".format(now.strftime("%H:%M"))
-    self.notify(message, name = notify)
-
+    globals.send_telegram(self, message, target = notify)

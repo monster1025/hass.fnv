@@ -1,0 +1,15 @@
+#################################
+#  DISHWASHER REMINDER          #
+#################################
+dishwasher_reminder:
+  class: DishwasherReminder
+  module: dishwasher_reminder
+  # constraint: input_boolean.dishwasher_reminder
+  state_extended: input_select.bosch_dishwasher_state_extended
+  motion_sensors:
+    - binary_sensor.motion_kitchenset_left_occupancy
+    - binary_sensor.motion_kitchenset_right_occupancy
+  alice: media_player.yandex_station_m00r46000m53db
+  cooldown: 3600
+  global_dependencies:
+    - globals

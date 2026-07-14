@@ -1,21 +1,14 @@
-telegram_bot:
-  - platform: polling
-    api_key: !secret telegram_key
-    allowed_chat_ids:
-      - !secret telegram_group_chat
-      - !secret telegram_monster_chat
-      - !secret telegram_sveta_chat
-
-notify:
-  - platform: telegram
-    name: telegram
-    chat_id: !secret telegram_group_chat
-    parse_mode: html
-  - platform: telegram
-    name: telegram_monster
-    chat_id: !secret telegram_monster_chat
-    parse_mode: html
-  - platform: telegram
-    name: telegram_sveta
-    chat_id: !secret telegram_sveta_chat
-    parse_mode: html
+# telegram_bot: секция удалена — интеграция уже настроена через config entry
+# (UI, импортирован 2025-12-28), YAML-платформа с ней конфликтовала:
+#   ERROR integration telegram_bot cannot be merged, expected a dict
+#
+# notify: платформы (legacy, deprecated) тоже убраны — все appdaemon-скрипты
+# мигрированы на entity-based telegram_bot.send_message/send_photo (см.
+# appdaemon/settings/apps/globals.py: TELEGRAM_TARGETS, send_telegram(),
+# send_telegram_photo()). Проверено: тестовые сообщения через новый механизм
+# успешно доставлены во все 3 чата (группа, Monster, Svetlana) 2026-07-14.
+#
+# Telegram bot notify-сущности теперь берутся из config entry:
+#   notify.home_assistant_fonvizina_fonvizina_18_1001567589226
+#   notify.home_assistant_fonvizina_monster_123622180
+#   notify.home_assistant_fonvizina_svetlana_205225134

@@ -32,7 +32,7 @@ services:
         max-size: 50m 
 
   hass:
-    image: "homeassistant/home-assistant:stable" #stable
+    image: "homeassistant/home-assistant:stable" #2026.4.2
     #image: ghcr.io/home-assistant/home-assistant:stable
     container_name: hass
     volumes:
@@ -121,10 +121,12 @@ services:
     volumes:
       - ./zigbee2mqtt/settings:/app/data
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      # в образе нет curl (Alpine), используем wget --spider
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8080"]
       interval: 30s
       timeout: 10s
       retries: 6
+      start_period: 60s
     restart: always
     logging:
       driver: json-file
@@ -184,22 +186,22 @@ services:
           max-size: "10m"
           max-file: "5"
 
-  homeconnect2mqtt:
-    build:
-      context: ./homeconnect2mqtt/docker
-      dockerfile: Dockerfile
-    restart: always
-    container_name: homeconnect2mqtt
-    ports:
-        - "5001:5000"
-    env_file: ./homeconnect2mqtt/settings/homeconnect2mqtt.env
-    volumes:
-        - ./homeconnect2mqtt/settings/config.json:/app/config.json:ro
-    logging:
-      driver: json-file
-      options:
-          max-size: "10m"
-          max-file: "5"
+  #homeconnect2mqtt:
+  #  build:
+  #    context: ./homeconnect2mqtt/docker
+  #    dockerfile: Dockerfile
+  #  restart: always
+  #  container_name: homeconnect2mqtt
+  #  ports:
+  #      - "5001:5000"
+  #  env_file: ./homeconnect2mqtt/settings/homeconnect2mqtt.env
+  #  volumes:
+  #      - ./homeconnect2mqtt/settings/config.json:/app/config.json:ro
+  #  logging:
+  #    driver: json-file
+  #    options:
+  #        max-size: "10m"
+  #        max-file: "5"
 
   matter-bridge:
     image: ghcr.io/t0bst4r/home-assistant-matter-hub:latest

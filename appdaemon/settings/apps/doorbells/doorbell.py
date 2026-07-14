@@ -1,5 +1,6 @@
 import appdaemon.plugins.hass.hassapi as hass
 import os
+import globals
 
 #
 # App to send notification when doorbell is ringing
@@ -26,10 +27,9 @@ class Doorbell(hass.Hass):
   def ha_event(self, event_name, data, kwargs):
     self.log('{}:{}'.format(event_name, data))
 
-    self.notify("Звонок в дверь!!!", name = self.args['notify'])
+    globals.send_telegram(self, "Звонок в дверь!!!", target = self.args['notify'])
     if 'doorbell_pic' in data:
-      extra_data = {'photo': {'url':data['doorbell_pic']}}
-      self.notify("Фото звонившего", name = self.args['notify'], data=extra_data)
+      globals.send_telegram_photo(self, data['doorbell_pic'], target = self.args['notify'], caption = "Фото звонившего")
 
     self.say('Звонок в дверь')
 
@@ -38,6 +38,6 @@ class Doorbell(hass.Hass):
 
   def say(self, command):
     if 'alices' in self.args:
-      for alice in self.args['alices']:        
+      for alice in self.args['alices']:
         self.log('command = {}'.format(command))
         self.call_service('media_player/play_media', entity_id=alice, media_content_type='text', media_content_id=command, extra={'volume_level': 0.8})

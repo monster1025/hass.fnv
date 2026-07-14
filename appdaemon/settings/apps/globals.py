@@ -2,21 +2,58 @@ import importlib
 import subprocess
 from typing import Any, Tuple, Union
 
-#
-# Global module
-# contain global functions
-#
-# Args:
-#
-# None
-#
-# Release Notes
-#
-# Version 1.0:
-#   Initial Version
-
 """Define various constants."""
 CONF_PEOPLE = 'people'
+
+# --- Telegram notifications -------------------------------------------------
+#
+# HA 2026.2 deprecated the per-platform notify.telegram* services in favour
+# of entity-based targeting (see repairs.issue_registry: telegram/migrate_notify).
+# The generic notify.send_message service only supports message/title, so it
+# can't carry parse_mode/photo/keyboard payloads our apps rely on - instead we
+# target the telegram_bot integration's own (non-deprecated) domain services
+# (telegram_bot.send_message / telegram_bot.send_photo) with entity_id, which
+# is the current 1:1 replacement for the old chat_id-based notify.telegram*.
+#
+# Entity ids come from .storage/core.entity_registry (platform: telegram_bot),
+# mapped from the friendly names ('telegram', 'telegram_monster',
+# 'telegram_sveta') used throughout apps.yaml configs.
+TELEGRAM_TARGETS = {
+    'telegram': 'notify.home_assistant_fonvizina_fonvizina_18_1001567589226',
+    'telegram_monster': 'notify.home_assistant_fonvizina_monster_123622180',
+    'telegram_sveta': 'notify.home_assistant_fonvizina_svetlana_205225134',
+}
+
+def send_telegram(self, message, target='telegram', parse_mode='html', **kwargs):
+    """Send a Telegram text message via telegram_bot.send_message.
+
+    Replacement for the deprecated `self.notify(message, name=target)`.
+    `target` is a friendly name from TELEGRAM_TARGETS (falls back to the
+    default group chat if unknown). Extra kwargs (title, keyboard, etc.) are
+    passed straight through to the service call.
+    """
+    entity_id = TELEGRAM_TARGETS.get(target, TELEGRAM_TARGETS['telegram'])
+    service_data = {'entity_id': entity_id, 'message': message}
+    if parse_mode:
+        service_data['parse_mode'] = parse_mode
+    service_data.update(kwargs)
+    self.call_service('telegram_bot/send_message', **service_data)
+
+def send_telegram_photo(self, url, target='telegram', caption=None, parse_mode='html', **kwargs):
+    """Send a photo via telegram_bot.send_photo.
+
+    Replacement for the deprecated `self.notify(msg, name=target,
+    data={'photo': {'url': url}})`.
+    """
+    entity_id = TELEGRAM_TARGETS.get(target, TELEGRAM_TARGETS['telegram'])
+    service_data = {'entity_id': entity_id, 'url': url}
+    if caption:
+        service_data['caption'] = caption
+    if parse_mode:
+        service_data['parse_mode'] = parse_mode
+    service_data.update(kwargs)
+    self.call_service('telegram_bot/send_photo', **service_data)
+# -----------------------------------------------------------------------------
 
 def most_common(the_list: list) -> Any:
     """Return the most common element in a list."""
@@ -57,12 +94,8 @@ def get_group_entities(self, group):
       return []
     if 'attributes' in attributes:
       attributes = attributes['attributes']
-
-    #group
     if "entity_id" in attributes:
       return attributes["entity_id"]
-
-    #simple item
     return [group]
 
 def turn_on(self, entity_id, state):
@@ -78,13 +111,11 @@ def turn_off(self, entity_id, state):
     self.turn_off(entity_id, state)
 
 def notification(self, to, message):
-  self.notify(message, name = "telegram")
-  
+  send_telegram(self, message, target = "telegram")
 
 def get_arg(args, key):
     key = args[key]
     return key
-
 
 def get_arg_list(args, key):
     arg_list = []

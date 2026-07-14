@@ -4,11 +4,11 @@ import globals
 #
 # Home and away report
 # Send report about home state after presence_actions was done.
-# 
+#
 # Args:
 # entity - group of entities to send state report
 # notify - notify entity to send message
-# 
+#
 # Release Notes
 #
 # Version 1.0:
@@ -32,7 +32,7 @@ class ReportByPresence(hass.Hass):
   def return_home_mode(self, event_id, event_args, kwargs):
     if 'constraint' in self.args and not self.constrain_input_boolean(self.args['constraint']):
       return
-    self.notify("Добро пожаловать домой!", name = self.args['notify'])
+    globals.send_telegram(self, "Добро пожаловать домой!", target = self.args['notify'])
 
 ############# AWAY REPORT ##########################
   def send_report(self, kwargs):
@@ -46,6 +46,6 @@ class ReportByPresence(hass.Hass):
         message += '{} ({}) = {}\n'.format(self.friendly_name(entity), entity, self.get_state(entity))
     if any:
       message = "В доме остались работать следующие устройства:\n" + message
-      self.notify(message, name = self.args['notify'])
+      globals.send_telegram(self, message, target = self.args['notify'])
     else:
-      self.notify("Все устройства в доме выключены.", name = self.args['notify'])
+      globals.send_telegram(self, "Все устройства в доме выключены.", target = self.args['notify'])

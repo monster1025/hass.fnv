@@ -97,7 +97,7 @@ class EpdBalanceSensor(hass.Hass):
           doc = BeautifulSoup(r.content, 'html.parser')
           address = doc.find("div", string="Вы собственник по адресу:").parent.find_all('div')[1].text
           result['address'] = address
-          
+
           service_to_pay = doc.find('div', string="ЖКУ, к оплате:").parent.find_all('div')[1].text.replace(' Р.', '')
           result['service_to_pay'] = service_to_pay
 
@@ -167,5 +167,4 @@ class EpdBalanceSensor(hass.Hass):
   def notify_tg(self, msg):
     if not 'notify' in self.args:
       return
-    extra_data = {'parse_mode': 'html'}
-    self.notify(msg, name = self.args['notify'], data=extra_data)
+    globals.send_telegram(self, msg, target = self.args['notify'])

@@ -1,27 +1,29 @@
 keenetic:
   module: keenetic
   class: TelegramInternetControl
-  
+
   # URL вашего API (адрес контейнера с API)
   api_url: "http://192.168.1.6:8001/run"
   api_user: !secret router_username
   api_password: !secret router_password
-  
+
   # Команды Telegram (регистронезависимые)
   block_command: "Коля наказан"
   unblock_command: "Включи Коле интернет"
-  
+
   # MAC адреса для управления (массив)
   target_macs:
     - "cc:4b:73:04:ed:34"
     - "b8:41:d9:d8:3f:58"
-  
+
   # Разрешенные user_id из Telegram (безопасность!)
   allowed_users:
     - 123622180
-  
+
   # Entity для прослушивания событий
   telegram_event_entity: "event.home_assistant_fonvizina_update_event"
-  
-  # Сервис для отправки уведомлений в Telegram
-  notify_service: "notify/telegram"
+
+  # Цель отправки уведомлений (friendly name из globals.TELEGRAM_TARGETS,
+  # см. appdaemon/settings/apps/globals.py). Раньше здесь был deprecated
+  # notify_service: "notify/telegram".
+  notify_target: "telegram"

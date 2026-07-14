@@ -1,10 +1,11 @@
 import appdaemon.plugins.hass.hassapi as hass
+import globals
 
 #
 # Notification system
 #
 # Args:
-# 
+#
 # Release Notes
 #
 # Version 1.0:
@@ -42,7 +43,7 @@ class TelegramNotifyTarget(BaseNotifyTarget):
       target = self.target_sveta
 
     hass.log('notifying over telegram person {} with message: {}'.format(target, message))
-    hass.notify(message, name=target)
+    globals.send_telegram(hass, message, target=target)
 
 class Notification(hass.Hass):
   home_targets = [AliceNotifyTarget()]

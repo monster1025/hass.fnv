@@ -1,15 +1,16 @@
 import appdaemon.plugins.hass.hassapi as hass
 import datetime
+import globals
 
 #
 # Water control application.
 # Controls water valve when all leave and no water needed devices is working.
-# 
+#
 # Args:
 # water_valve = water valve entity
 # notify - notify entity to send message
 # constraint (optional) = input_boolean to enable\disable this automation
-# 
+#
 # Release Notes
 #
 # Version 1.0:
@@ -56,11 +57,11 @@ class WaterValveControl(hass.Hass):
         if name is None:
           name = device
         device_names += name
-      self.notify('В доме остались требующие воды устройства ({}), подача воды не будет отключена.'.format(device_names), name = self.args['notify'])
+      globals.send_telegram(self, 'В доме остались требующие воды устройства ({}), подача воды не будет отключена.'.format(device_names), target = self.args['notify'])
       self.cancel_current_timer()
       self.timers.append(self.run_every(self.wait_when_device_is_done, self.datetime()+datetime.timedelta(seconds=5), 5*60))
     else:
-      self.notify('Отключаю подачу воды.', name = self.args['notify'])
+      globals.send_telegram(self, 'Отключаю подачу воды.', target = self.args['notify'])
       self.turn_off(self.args['water_valve'])
       # for device in self.args['water_devices']:
       #   self.turn_off(device)
@@ -77,7 +78,7 @@ class WaterValveControl(hass.Hass):
       self.current_wait_cycle = self.current_wait_cycle+1
     elif len(powered_on) == 0 and self.current_wait_cycle>=self.wait_cycles:
       self.current_wait_cycle = 0
-      self.notify('Устройства требующие воды закончили свою работу, отключаю подачу воды.', name = self.args['notify'])
+      globals.send_telegram(self, 'Устройства требующие воды закончили свою работу, отключаю подачу воды.', target = self.args['notify'])
       self.turn_off_water_devices()
       self.cancel_current_timer()
 

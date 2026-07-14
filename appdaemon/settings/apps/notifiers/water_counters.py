@@ -24,7 +24,7 @@ class WaterCountersAlarm(hass.Hass):
       return
     self.checkup_threasold = self.args['checkup_threasold']
     self.send_threasold = self.args['send_threasold']
-    
+
     self.check_send_dates({"force": 1})
     self.run_daily(self.check_checkup_dates, datetime.time(10, 0, 0))
     self.run_daily(self.check_send_dates, datetime.time(10, 1, 0))
@@ -69,8 +69,8 @@ class WaterCountersAlarm(hass.Hass):
 
     if send_devices or ("always_send" in self.args and self.args["always_send"] == 1) or ("force" in kwargs and kwargs["force"] == 1):
       if message != "":
-        self.notify(message, name = "telegram")
-    
+        globals.send_telegram(self, message)
+
   def check_checkup_dates(self, kwargs):
     if 'constraint' in self.args and not self.constrain_input_boolean(self.args['constraint']):
       return
@@ -78,7 +78,7 @@ class WaterCountersAlarm(hass.Hass):
     entities = self.get_state()
     if entities == None:
       return
-      
+
     values = {}
     checkup_devices = []
     for entity_id in entities:
@@ -106,4 +106,4 @@ class WaterCountersAlarm(hass.Hass):
 
     if checkup_devices or ("always_send" in self.args and self.args["always_send"] == 1) or ("force" in kwargs and kwargs["force"] == 1):
       if message != "":
-        self.notify(message, name = "telegram")
+        globals.send_telegram(self, message)

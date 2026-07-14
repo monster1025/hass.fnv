@@ -1,5 +1,6 @@
 import appdaemon.plugins.hass.hassapi as hass
 import datetime
+import globals
 
 #
 # App to send email report for devices running low on battery
@@ -23,7 +24,7 @@ class Battery(hass.Hass):
     time = datetime.time(10, 0, 0)
     self.run_daily(self.check_batteries, time)
     self.check_batteries(None)
-    
+
   def check_batteries(self, kwargs):
     if 'constraint' in self.args and not self.constrain_input_boolean(self.args['constraint']):
       return
@@ -59,7 +60,7 @@ class Battery(hass.Hass):
       for device in low:
         message += "{}: {}%\n".format(self.friendly_name(device), values[device])
       message += "\n\n"
-          
+
     if low: # or ("always_send" in self.args and self.args["always_send"] == 1) or ("force" in kwargs and kwargs["force"] == 1):
       if message != "":
-        self.notify(message, name = "telegram")
+        globals.send_telegram(self, message)
